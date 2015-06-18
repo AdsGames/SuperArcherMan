@@ -152,7 +152,7 @@ package allanly
 				}
 				
 				// Win
-				if ( hasWon && counter >= 5) {
+				if ( hasWon && counter >= 3) {
 					FlxG.music.stop();
 					dieTimer.stop();
 					counter = 0;

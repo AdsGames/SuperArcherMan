@@ -25,7 +25,7 @@
  </layer>
  <objectgroup name="objects">
   <object id="1" type="door" x="464" y="304" width="16" height="32"/>
-  <object id="2" type="player" x="49.1818" y="286.545" width="16" height="32"/>
+  <object id="2" type="player" x="49.1818" y="286.545" width="52.4546" height="81.2732"/>
   <object id="4" type="door" x="960" y="256" width="16" height="32"/>
   <object id="5" type="door" x="894" y="192" width="16" height="32"/>
   <object id="6" type="door" x="1024" y="256" width="16" height="32"/>

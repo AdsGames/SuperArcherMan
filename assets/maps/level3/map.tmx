@@ -24,7 +24,7 @@
   </data>
  </layer>
  <objectgroup name="objects">
-  <object id="1" type="player" x="188.25" y="200.25" width="14" height="20.75"/>
+  <object id="1" type="player" x="188.25" y="200.25" width="68.2955" height="72.2955"/>
   <object id="3" type="enemy" x="560.5" y="239.375" width="14" height="20.75"/>
   <object id="4" type="enemy" x="500.25" y="198.375" width="14" height="20.75"/>
   <object id="5" type="enemy" x="331.5" y="552.125" width="14" height="20.75"/>

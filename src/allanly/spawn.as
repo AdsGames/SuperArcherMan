@@ -14,7 +14,8 @@ package allanly
 		public function spawn( newX:Number, newY:Number, newWidth:Number, newHeight:Number) {
 			// Construct parent
 			super( newX, newY);
-			
+			this.width = newWidth;
+			this.height = newHeight;
 			this.visible = false;
 		}
 	}

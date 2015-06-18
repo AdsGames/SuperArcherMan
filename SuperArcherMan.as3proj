@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\prjFlixel1.swf" />
+    <movie path="bin\Super Archer Man.swf" />
     <movie fps="30" />
     <movie width="640" />
     <movie height="480" />
