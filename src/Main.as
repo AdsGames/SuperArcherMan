@@ -23,6 +23,6 @@ package
             var game:FirstGame = new FirstGame;
  
             addChild(game);
-        }
+        } 
     }
 }

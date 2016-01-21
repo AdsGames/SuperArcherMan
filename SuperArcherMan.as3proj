@@ -4,19 +4,20 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\Super Archer Man.swf" />
+    <movie path="bin\SuperArcherManJim.swf" />
     <movie fps="30" />
     <movie width="640" />
     <movie height="480" />
-    <movie version="10" />
+    <movie version="11" />
     <movie minorVersion="1" />
     <movie platform="Flash Player" />
     <movie background="#000000" />
-    <movie preferredSDK="C:\Program Files (x86)\FlashDevelop\Tools\flexsdk" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
+    <class path="libs\engine" />
+    <class path="libs\org" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -86,7 +87,7 @@
   <!-- Other project options -->
   <options>
     <option showHiddenPaths="False" />
-    <option testMovie="Default" />
+    <option testMovie="ExternalPlayer" />
     <option testMovieCommand="" />
   </options>
   <!-- Plugin storage -->

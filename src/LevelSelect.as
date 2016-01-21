@@ -41,18 +41,21 @@ package
 		
 		// 1
         private function launchLevel1():void {
+			FlxG.music.stop();
 			PlayState.levelOn = 1;
             FlxG.switchState(new PlayState);
         }
 		
 		// 2
         private function launchLevel2():void {
+			FlxG.music.stop();
 			PlayState.levelOn = 2;
             FlxG.switchState(new PlayState);
         }
 		
 		// 3
         private function launchLevel3():void {
+			FlxG.music.stop();
 			PlayState.levelOn = 3;
             FlxG.switchState(new PlayState);
         }

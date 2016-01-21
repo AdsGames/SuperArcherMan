@@ -45,7 +45,7 @@ package allanly
 			arrow_container = new FlxGroup();
 			
 			// Power text 
-			powerText = new FlxText( 0, 40, 100, "swag");
+			powerText = new FlxText( 0, 40, 100, "");
 			FlxG.state.add( powerText);
 		}
 		

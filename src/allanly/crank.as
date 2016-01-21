@@ -27,12 +27,16 @@ package allanly
 			this.addAnimation("spin", [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3], 8, false);
 			this.addAnimation("stay", [0], 8, false);
 			this.play("stay");
+			
+			this.solid = true;
 		}
 		
 		// Turn crank
 		public function spin():void {
 			activated = true;
 			this.play("spin");
+			
+			trace( "Spinning crank");
 		}
 		
 		// Check if its been spun

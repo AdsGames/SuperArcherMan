@@ -16,16 +16,17 @@ package{
 		// Level Number
 		public static var levelOn:int = 0;
 		
-		
-		// Music
-		[Embed(source = "../assets/sounds/main.mp3")]
-		private var mainMusic:Class;
-		
 		// Tileset
 		[Embed(source = "../assets/maps/level1/tilemapflat.png")] private var ImgTiles1:Class;
 		[Embed(source = "../assets/maps/level2/tilemapflat.png")] private var ImgTiles2:Class;
 		[Embed(source = "../assets/maps/level3/tilemapflat.png")] private var ImgTiles3:Class;
 		private var ImgTiles:Class;
+		
+		// Maps
+		[Embed(source = "../assets/maps/level1/map.tmx", mimeType = "application/octet-stream")] private static var MapTiles1:Class;
+		[Embed(source = "../assets/maps/level2/map.tmx", mimeType = "application/octet-stream")] private static var MapTiles2:Class;
+		[Embed(source = "../assets/maps/level3/map.tmx", mimeType = "application/octet-stream")] private static var MapTiles3:Class;
+		private static var MapTiles:Class;
 		
 		// 4 maps
 		private var map_back:FlxTilemap;
@@ -86,17 +87,26 @@ package{
 			// Background
 			sceneBackground = new background( 5000);
 			
+			// Create location for pointer so no crashing
+			gameCrank = new crank( -100, -100);
+			gameCrown = new crown( -100, -100);
+			gameDrawbridge = new drawbridge( -100, -100, 0, 0);
+			gameSpawn = new spawn( -100, -100, 0, 0);
+			
 			// Tiles for level
 			if ( levelOn == 1){
 				ImgTiles = ImgTiles1;
+				MapTiles = MapTiles1;
 				FlxG.bgColor = 0xFF0094FE;
 			}
 			else if ( levelOn == 2){
 				ImgTiles = ImgTiles2;
+				MapTiles = MapTiles2;
 				FlxG.bgColor = 0xFF76C4FC;
 			}
-			else if ( levelOn ==  3){
+			else if ( levelOn == 3){
 				ImgTiles = ImgTiles3;
+				MapTiles = MapTiles3;
 				FlxG.bgColor = 0xFF080038;
 			}
 				
@@ -105,26 +115,17 @@ package{
 			map_mid = new FlxTilemap();
 			map_collide = new FlxTilemap();
 			map_fore = new FlxTilemap();
-			loadTmxFile();
+			loadTmxFile( MapTiles);
 			
 			// Scroll that map
 			FlxG.camera.follow( jim);
 			
-			// Debug!
-			//FlxG.debug = true;
-			//FlxG.visualDebug = true;
-			
 			// Secret mouse 
 			MouseRectangle = new FlxSprite(FlxG.mouse.x, FlxG.mouse.y);
 			
-			// Create location for pointer so no crashing
-			gameCrank = new crank( -100, -100);
-			gameCrown = new crown( -100, -100);
-			gameDrawbridge = new drawbridge( -100, -100, 0, 0);
-			gameSpawn = new spawn( -100, -100, 0, 0);
-			
-			// Play music
-			FlxG.playMusic(mainMusic);
+			// Debug!
+			//FlxG.debug = true;
+			//FlxG.visualDebug = true;
         }
 		
 		// HINT: THIS UPDATES
@@ -145,6 +146,11 @@ package{
 			FlxG.overlap( jim, doors, collide_door);
 			FlxG.overlap( characters, doors, collide_door);
 			
+			// Run into draw bridge
+			FlxG.collide( jim, gameDrawbridge);
+			FlxG.collide( characters, gameDrawbridge);
+			FlxG.collide( jim.getArrows(), gameDrawbridge);
+			
 			// Win!
 			if (FlxG.overlap( jim, gameSpawn) && gameCrown.isTaken() ) {
 				jim.win();
@@ -155,8 +161,6 @@ package{
 				gameDrawbridge.fall();
 				gameCrank.spin();
 			}
-			FlxG.collide( jim, gameDrawbridge);
-			FlxG.collide( characters, gameDrawbridge);
 			
 			// Crown
 			if (FlxG.overlap( gameCrown, jim)) {
@@ -164,17 +168,17 @@ package{
 			}
 			
 			// Zoom
-			if ( FlxG.keys.E) {
+			/*if ( FlxG.keys.E) {
 				MouseRectangle.x += getSign(FlxG.mouse.x - 640);
 				MouseRectangle.y += getSign(FlxG.mouse.y - 480);
 				
 				FlxG.camera.follow( MouseRectangle);
 				FlxG.camera.setBounds( jim.x - 400, jim.y - 300, 800, 600);
 			}
-			else {
+			else {*/
 				FlxG.camera.follow( jim);
 				FlxG.camera.setBounds( 0, 0, map_back.widthInTiles * 16, map_back.heightInTiles * 16);
-			}
+			//}
 			
 			// Die
 			if ( FlxG.overlap( jim, characters)) {
@@ -233,14 +237,18 @@ package{
 		 * MAP LOADING HERE *
 		 ********************/
 		// Load the map!
-		private function loadTmxFile():void{
-			var loader:URLLoader = new URLLoader(); 
+		private function loadTmxFile( TMXFile:Class):void{ 
+			/*var loader:URLLoader = new URLLoader(); 
 			loader.addEventListener(Event.COMPLETE, onTmxLoaded); 
-			loader.load(new URLRequest('../assets/maps/level' + String(levelOn) + '/map.tmx')); 
+			loader.load(new URLRequest("../assets/maps/level" + String(levelOn) + "/map.tmx"));*/
+			
+			var xml:XML = new XML(new TMXFile());
+			var tmx:TmxMap = new TmxMap(xml);
+			loadStateFromTmx(tmx);
 		}
 		
 		
-		// Callback for level loaded
+		// Callback for level loaded 
 		private function onTmxLoaded( e:Event):void{
 			var xml:XML = new XML(e.target.data);
 			var tmx:TmxMap = new TmxMap(xml);
@@ -248,7 +256,9 @@ package{
 		}
 		
 		// Load each layer
-		private function loadStateFromTmx(tmx:TmxMap):void{
+		private function loadStateFromTmx(tmx:TmxMap):void {
+			trace( "XML loaded!");
+			
 			// Background
 			var mapCsv:String = tmx.getLayer('back').toCsv(tmx.getTileSet('tiles'));
 			map_back.loadMap(mapCsv,ImgTiles);
@@ -267,7 +277,7 @@ package{
 			map_collide.follow();
 			add(map_collide);
 			
-			//create the flixel implementation of the objects specified in the ObjectGroup 'objects'
+			// Create the flixel implementation of the objects specified in the ObjectGroup 'objects'
 			var group:TmxObjectGroup = tmx.getObjectGroup('objects');
 			for each(var object:TmxObject in group.objects)
 				spawnObject(object)
@@ -280,7 +290,9 @@ package{
 		}
 		
 		// Spawn objects using tiled object layer
-		private function spawnObject(obj:TmxObject):void{
+		private function spawnObject(obj:TmxObject):void {
+			trace( "Adding " + obj.type + " at x:" + obj.x + " y:" + obj.y + " width:" + obj.width + " height:" + obj.height);
+			
 			//Add game objects based on the 'type' property
 			switch(obj.type)
 			{
@@ -315,9 +327,9 @@ package{
 					ladders.add( newLadder);
 					return;
 				case "crown":
-					var newCrown:crown = new crown( obj.x, obj.y);
-					gameCrown = newCrown;
-					add( newCrown);
+					gameCrown.x = obj.x;
+					gameCrown.y = obj.y;
+					add( gameCrown);
 					return;
 				case "painting":
 					var newPainting:painting = new painting( obj.x, obj.y);
@@ -328,31 +340,20 @@ package{
 					add( newThrone);
 					return;
 				case "drawBridge":
-					var newDrawbridge:drawbridge = new drawbridge( obj.x, obj.y, obj.width, obj.height);
-					gameDrawbridge = newDrawbridge;
-					add( newDrawbridge);
+					gameDrawbridge = new drawbridge( obj.x, obj.y, obj.width, obj.height);
+					add( gameDrawbridge);
 					return;
 				case "crank":
-					var newCrank:crank = new crank( obj.x, obj.y);
-					gameCrank = newCrank;
-					add( newCrank);
+					gameCrank.x = obj.x;
+					gameCrank.y = obj.y;
+					add( gameCrank);
 					return;
 				case "water":
 					var newWater:water = new water( obj.x, obj.y, obj.width, obj.height);
 					return;
+				default:
+					return;
 			}
-		
-			//This is the thing that spews nuts and bolts
-			/*if(obj.type == "curtain")
-			{
-				var dispenser:FlxEmitter = new FlxEmitter(obj.x,obj.y);
-				dispenser.setSize(obj.width,obj.height);
-				dispenser.setXSpeed(obj.custom['minvx'],obj.custom['maxvx']);
-				dispenser.setYSpeed(obj.custom['minvy'],obj.custom['maxvy']);
-				//dispenser.createSprites(ImgGibs, 120, 16, true, 0.8);
-				dispenser.start(false,obj.custom['quantity']);
-				add(dispenser);
-			}*/
 		}
     }
 }

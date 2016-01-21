@@ -49,7 +49,7 @@ package
             add(startButton);
 			add(helpButton);
 			
-			FlxG.playMusic( mainMusic);
+			FlxG.playMusic( mainMusic, 1.0);
         }
 		
 		// Update

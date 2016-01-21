@@ -66,6 +66,8 @@ package allanly
 			// Init sound
 			bowReleaseSound.proximity( this.x, this.y, this.parent, 400, true);
 			bowReleaseSound.play();
+			
+			this.solid = true;
 		}
 		
 		// Update arrow

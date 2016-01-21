@@ -41,6 +41,8 @@ package allanly
 			
 			fall_timer = new Timer(100);
             fall_timer.addEventListener(TimerEvent.TIMER, fallDown);
+			
+			this.solid = true;
 		}
 		
 		// Spin for test
