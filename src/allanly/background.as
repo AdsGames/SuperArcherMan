@@ -1,8 +1,9 @@
 package allanly 
 {
 	/**
+	 * Background
 	 * ALLAN AND SULLY!
-	 * Background handle
+	 * Background handler
 	 * 14/6/15
 	 */
 	
@@ -18,7 +19,7 @@ package allanly
 		// Create
 		public function background( newWidth:Number) {
 			// Add backgrounds
-			for ( var t:Number = 0; t < newWidth; t += 640) {
+			for ( var t:Number = 0; t < newWidth; t += FlxG.width) {
 				var newParallax:FlxSprite = new FlxSprite(t, 0, parallax);
 				newParallax.scrollFactor.x = 0.5;
 				FlxG.state.add( newParallax);

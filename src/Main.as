@@ -1,9 +1,11 @@
 package
 {
+	// Imports
     import flash.display.Sprite;
     import flash.events.Event;
  
-    [Frame(factoryClass="Preloader")]
+
+	// Initilize game and run
     public class Main extends Sprite
     {
         public function Main():void

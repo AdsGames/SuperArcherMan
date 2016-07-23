@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Enemy
 	 * ALLAN AND SULLY!
 	 * This is the enemy, the archnemeis of our hero JIM!
 	 * 1/6/15

@@ -56,9 +56,6 @@ package{
 		// Spawn point
 		public var gameSpawn:spawn;
 		
-		// Mouse
-		private var MouseRectangle:FlxSprite;
-		
 		// Player
 		private var jim:player;
 		
@@ -120,12 +117,22 @@ package{
 			// Scroll that map
 			FlxG.camera.follow( jim);
 			
-			// Secret mouse 
-			MouseRectangle = new FlxSprite(FlxG.mouse.x, FlxG.mouse.y);
+			// Pickup jims bow
+			jim.pickupBow();
 			
 			// Debug!
 			//FlxG.debug = true;
 			//FlxG.visualDebug = true;
+			
+			// Zoom
+			FlxG.camera.setBounds( 0, 0, map_back.widthInTiles * 16, map_back.heightInTiles * 16);
+			FlxG.camera.follow( jim);
+			
+			/*FlxG.camera.width = 320;
+			FlxG.camera.height = 240;
+			FlxG.camera.zoom = 2;
+			FlxG.camera.x += 320;
+			FlxG.camera.y += 240;*/
         }
 		
 		// HINT: THIS UPDATES
@@ -166,19 +173,6 @@ package{
 			if (FlxG.overlap( gameCrown, jim)) {
 				gameCrown.takeCrown();
 			}
-			
-			// Zoom
-			/*if ( FlxG.keys.E) {
-				MouseRectangle.x += getSign(FlxG.mouse.x - 640);
-				MouseRectangle.y += getSign(FlxG.mouse.y - 480);
-				
-				FlxG.camera.follow( MouseRectangle);
-				FlxG.camera.setBounds( jim.x - 400, jim.y - 300, 800, 600);
-			}
-			else {*/
-				FlxG.camera.follow( jim);
-				FlxG.camera.setBounds( 0, 0, map_back.widthInTiles * 16, map_back.heightInTiles * 16);
-			//}
 			
 			// Die
 			if ( FlxG.overlap( jim, characters)) {
@@ -300,7 +294,6 @@ package{
 					jim.x = obj.x, 
 					jim.y = obj.y;
 					add( jim);
-					jim.pickupBow();
 					gameSpawn = new spawn( obj.x, obj.y, obj.width, obj.height);
 					return;
 				case "enemy":

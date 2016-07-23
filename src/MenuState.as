@@ -1,5 +1,11 @@
 package
 {
+	/**
+	 * ALLAN AND SULLY!
+	 * The Menu
+	 * 5/28/15
+	 */
+	
     import org.flixel.*;
 	import allanly.tools;
  
@@ -56,8 +62,8 @@ package
 		public override function update():void {
 			super.update();
 			
-			emitter.x = tools.myRandom( 0, 640);
-			emitter.y = tools.myRandom( 0, 480);
+			emitter.x = tools.myRandom( 0, FlxG.width);
+			emitter.y = tools.myRandom( 0, FlxG.height);
 		}
  
 		// Start

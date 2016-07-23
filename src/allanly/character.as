@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Character
 	 * Allan and Sully!
 	 * Top level character class
 	 * 29/5/15

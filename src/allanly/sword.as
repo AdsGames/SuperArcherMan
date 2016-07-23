@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Sword
 	 * ALLAN AND SULLY!
 	 * Our main character, jim's, sword
 	 * 29/5/15

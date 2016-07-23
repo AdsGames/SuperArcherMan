@@ -1,8 +1,9 @@
 package allanly 
 {
 	/**
+	 * Drawbridge
 	 * ALLAN AND SULLY!
-	 * Nice throne
+	 * A drawbridge that opens with crank
 	 * 11/6/15
 	 */
 	

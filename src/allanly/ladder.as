@@ -1,8 +1,9 @@
 package allanly 
 {
 	/**
+	 * Ladder
 	 * ALLAN AND SULLY!
-	 * Animated torch for that castle feel
+	 * Ladder to get to higher (or lower) places
 	 * 4/6/15
 	 */
 	

@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Snazzy animated paintint
 	 * ALLAN AND SULLY!
 	 * Nice painting
 	 * 11/6/15

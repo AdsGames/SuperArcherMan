@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Animated torch
 	 * ALLAN AND SULLY!
 	 * Animated torch for that castle feel
 	 * 4/6/15

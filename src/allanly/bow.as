@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Bow
 	 * ALLAN AND SULLY!
 	 * Our main character, jim's, bow
 	 * 29/5/15

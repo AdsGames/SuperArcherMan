@@ -1,6 +1,7 @@
 package allanly 
 {
 	/**
+	 * Player class
 	 * ALLAN AND SULLY!
 	 * Our main character, jim
 	 * 29/5/15
