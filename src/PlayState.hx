@@ -1,16 +1,14 @@
 package{
 	// Imports
 	import allanly.*;
-    import org.flixel.*;
-
-	import flash.events.Event;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	
-	import net.pixelpracht.tmx.TmxMap;
-	import net.pixelpracht.tmx.TmxObject;
-	import net.pixelpracht.tmx.TmxObjectGroup;
-	
+    import flash.events.Event;
+import flash.net.URLLoader;
+import flash.net.URLRequest;
+import net.pixelpracht.tmx.TmxMap;
+import net.pixelpracht.tmx.TmxObject;
+import net.pixelpracht.tmx.TmxObjectGroup;
+import org.flixel.*;
+							
 	// THE GAME!
     public class PlayState extends FlxState {	
 		// Level Number
