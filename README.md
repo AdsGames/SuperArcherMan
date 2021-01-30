@@ -16,9 +16,19 @@ haxelib run flixel-tools setup
 
 You will also need the tmx library
 
-```
+```sh
 haxelib install tmx 0.2.0
 ```
+
+## Running
+
+```sh
+lime test html5 --connect 6000
+```
+
+or in vscode
+
+`ctrl + shift + b`
 
 ## VS Code Extension
 

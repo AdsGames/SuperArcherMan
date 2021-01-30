@@ -14,13 +14,8 @@ import flixel.effects.particles.FlxParticle;
 import flixel.ui.FlxButton;
 
 class MenuState extends FlxState {
-	// Buttons
-	private var startButton:FlxButton;
-	private var helpButton:FlxButton;
-
 	// Arrows
 	private var emitter:FlxEmitter;
-	private var particles:Int = 5;
 
 	public function new() {
 		super();
@@ -33,24 +28,24 @@ class MenuState extends FlxState {
 		// Emitter
 		emitter = new FlxEmitter(10, 10);
 		for (i in 0...100) {
-			var particle:FlxParticle = new FlxParticle();
+			var particle = new FlxParticle();
 			particle.loadGraphic(AssetPaths.arrow__png);
 			particle.exists = false;
 			emitter.add(particle);
 		}
+
 		add(emitter);
-		emitter.start(false, 5);
+
+		emitter.start(false, 0.1);
 
 		add(new FlxSprite(0, 0, AssetPaths.menu__png));
 
-		startButton = new FlxButton(280, 380, "Start Game", startGame);
-		helpButton = new FlxButton(280, 420, "Instructions", showHelp);
+		add(new FlxButton(280, 380, "Start Game", this.startGame));
+		add(new FlxButton(280, 420, "Instructions", this.showHelp));
 
-		add(startButton);
-		add(helpButton);
-
-		FlxG.sound.music.loadEmbedded(AssetPaths.menu__mp3);
-		FlxG.sound.music.play(false);
+		if (FlxG.sound.music == null) {
+			FlxG.sound.playMusic(AssetPaths.menu__mp3, 1, true);
+		}
 	}
 
 	// Update

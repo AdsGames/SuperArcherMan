@@ -8,20 +8,12 @@ package allanly;
  */
 // Libraries
 import Math;
-import flash.events.TimerEvent;
-import flash.utils.Timer;
-import flixel.FlxG;
 import flixel.FlxSprite;
 
 // Door (fun to kick in)
 class Door extends FlxSprite {
-	// Timer for animating door
-	private var tick_timer:Timer;
-	private var tick_count:Int;
-
-	private var doorSpeed:Float;
-	private var doorPosition:Float;
-
+	private var doorSpeed:Float = 0;
+	private var doorPosition:Float = 0;
 	private var open:Bool = false;
 
 	// Create a nice one
@@ -32,15 +24,8 @@ class Door extends FlxSprite {
 		this.origin.x = 0;
 		this.origin.y = 0;
 
-		// Setup timer
-		tick_timer = new Timer(100);
-		tick_timer.addEventListener(TimerEvent.TIMER, timer_ticker);
-		tick_count = 0;
-
 		// Close the door
 		this.scale.x = 0.2;
-		this.doorSpeed = 0;
-		this.doorPosition = 0;
 
 		// Cant move
 		this.immovable = true;
@@ -64,10 +49,5 @@ class Door extends FlxSprite {
 		if (this.scale.x < 0.6 && this.scale.x > -0.6) {
 			doorSpeed = magnitude / 1000;
 		}
-	}
-
-	// Ticker for bow power
-	private function timer_ticker(event:TimerEvent) {
-		tick_count++;
 	}
 }

@@ -18,9 +18,9 @@ class Background extends FlxSprite {
 		// Add backgrounds
 		var t:Int = 0;
 		while (t < width) {
-			var newParallax:FlxSprite = new FlxSprite(t, 0, AssetPaths.mountains__png);
-			newParallax.scrollFactor.x = 0.5;
-			FlxG.state.add(newParallax);
+			var paralax:FlxSprite = new FlxSprite(t, 0, AssetPaths.mountains__png);
+			paralax.scrollFactor.x = 0.5;
+			FlxG.state.add(paralax);
 			t += FlxG.width;
 		}
 	}

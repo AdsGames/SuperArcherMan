@@ -8,7 +8,6 @@ package allanly;
  */
 // Imports
 import Math;
-import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.system.FlxSound;

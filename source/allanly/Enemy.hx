@@ -10,25 +10,24 @@ package allanly;
 import allanly.Sword;
 import allanly.Tools;
 import flixel.FlxG;
-import flixel.FlxObject;
-import flixel.FlxSprite;
+import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 
 // Swinging enemies
 class Enemy extends Character {
-	private var enemyHeySound:FlxSound;
+	private var heySound:FlxSound;
 
 	// Shooting
-	private var enemy_sword:Sword;
+	private var sword:Sword;
 
 	// Variables
-	private var movementSpeed:Int = 160;
 	private var detected:Bool = false;
-	private var destination_x:Int = 0;
-	private var destination_y:Int = 0;
 
 	// Pointer to jim
 	private var jimPointer:Character;
+
+	// Constants
+	private var MOVEMENT_SPEED:Int = 200;
 
 	// Create enemy
 	public function new(jimPointer:Character, x:Float = 0, y:Float = 0) {
@@ -47,38 +46,38 @@ class Enemy extends Character {
 		this.health = 10;
 
 		// Load sounds
-		this.enemyHeySound = new FlxSound();
-		this.enemyHeySound.loadEmbedded(AssetPaths.enemy_hey__mp3);
+		this.heySound = new FlxSound();
+		this.heySound.loadEmbedded(AssetPaths.enemy_hey__mp3);
 	}
 
 	// Update
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
+		// Update sound
+		this.heySound.update(elapsed);
+
 		// Move enemy
-		this.move();
+		this.move(elapsed);
 	}
 
 	// Move around
-	override public function move() {
-		// Parent move
-		super.move();
-
-		// Random move
-		var randomMove:Int = Tools.myRandom(0, 3);
-
+	override public function move(elapsed:Float) {
 		// Detection
-		if (Tools.getDistance(this.position, jimPointer.position) < 50 && !detected && health > 0) {
+		var distance = Tools.getDistance(new FlxPoint(this.x, this.y), new FlxPoint(this.jimPointer.x, this.jimPointer.y));
+		if (!this.detected && distance < 50 && this.health > 0) {
 			this.detected = true;
+
 			// Hey! sound
-			// enemyHeySound.proximity( this.x, this.y, this.jimPointer, 800, true);
-			enemyHeySound.play();
+			this.heySound.proximity(this.x, this.y, this.jimPointer, 800, true);
+			this.heySound.play();
 		}
 		// Right
 		if (detected && this.x < jimPointer.x) {
-			enemy_sword.setSpinDir("right");
-			this.velocity.x = movementSpeed;
+			this.sword.setSpinDir("right");
+			this.velocity.x = this.MOVEMENT_SPEED;
 			this.animation.play("walk");
+
 			// Flip
 			if (this.scale.x < 0) {
 				this.scale.x *= -1;
@@ -86,9 +85,10 @@ class Enemy extends Character {
 		}
 		// Left
 		else if (detected && this.x > jimPointer.x) {
-			enemy_sword.setSpinDir("left");
-			this.velocity.x = -movementSpeed;
+			this.sword.setSpinDir("left");
+			this.velocity.x = -this.MOVEMENT_SPEED;
 			this.animation.play("walk");
+
 			// Flip
 			if (this.scale.x > 0) {
 				this.scale.x *= -1;
@@ -96,31 +96,26 @@ class Enemy extends Character {
 		}
 		// Idleing
 		else {
-			enemy_sword.setSpinDir("none");
+			sword.setSpinDir("none");
 			this.animation.play("idle");
 		}
 
-		// Jump Jump!
-		/*if ( randomMove == 2) {
-			this.jump( 2000);
-		}*/
+		// Move sword to self
+		this.sword.setPosition(this.x, this.y);
 
-		// Move sword to enemy
-		// enemy_sword.setPosition(jimPointer.position);
+		// Parent move
+		super.move(elapsed);
 	}
 
-	// Move to player
-	public function moveTo(x:Float, y:Float) {}
-
 	// Get hit
-	public function getHit(newVelocity:Float) {
-		this.health -= Math.abs(newVelocity);
+	public function getHit(velocity:Float) {
+		this.health -= Math.abs(velocity);
 	}
 
 	// Give sword
 	public function pickupSword() {
 		// Nice sword
-		enemy_sword = new Sword(this.y + 1, this.x + 9, 8);
-		FlxG.state.add(enemy_sword);
+		this.sword = new Sword(this.y + 1, this.x + 9);
+		FlxG.state.add(this.sword);
 	}
 }

@@ -6,7 +6,6 @@ package allanly;
  * Water effects
  * 12/6/2015
  */
-import flixel.FlxG;
 import flixel.FlxSprite;
 
 class Water extends FlxSprite {

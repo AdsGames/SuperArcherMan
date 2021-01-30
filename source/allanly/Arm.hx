@@ -13,17 +13,12 @@ import flixel.util.FlxTimer;
 // Arm that attatches to player
 class Arm extends FlxSprite {
 	// Variables
-	public var tick_timer:FlxTimer;
-	public var tick_count:Float;
+	public var tickTimer:FlxTimer = new FlxTimer();
+	public var tickCount:Float = 0;
 
-	// Create bow
+	// Create arm
 	public function new(x:Float, y:Float, image:String) {
 		super(x, y, image);
-
-		// Setup timer
-		this.tick_timer = new FlxTimer();
-		this.tick_timer.start(10, this.timer_ticker, 0);
-		this.tick_count = 0;
 	}
 
 	// Update bow
@@ -31,13 +26,8 @@ class Arm extends FlxSprite {
 		super.update(elapsed);
 	}
 
-	// Change location
-	// public function setPosition(newPosition:FlxPoint, offsetX:Int = 0, offsetY:Int = 0) {
-	// 	this.x = newPosition.x + offsetX;
-	// 	this.y = newPosition.y + offsetY;
-	// }
 	// Ticker for bow power
-	private function timer_ticker(timer:FlxTimer) {
-		tick_count++;
+	private function timerTicker(timer:FlxTimer) {
+		tickCount++;
 	}
 }

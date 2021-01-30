@@ -29,14 +29,12 @@ class Crank extends FlxSprite {
 
 	// Turn crank
 	public function spin() {
-		activated = true;
+		this.activated = true;
 		this.animation.play("spin");
-
-		trace("Spinning crank");
 	}
 
 	// Check if its been spun
 	public function getActivated():Bool {
-		return activated;
+		return this.activated;
 	}
 }

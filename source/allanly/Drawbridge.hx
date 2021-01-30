@@ -14,7 +14,7 @@ import flixel.util.FlxTimer;
 // Torch
 class Drawbridge extends FlxSprite {
 	// Timers
-	private var fall_timer:FlxTimer;
+	private var fallTimer:FlxTimer;
 
 	// Create
 	public function new(x:Float, y:Float, width:Float, height:Float) {
@@ -29,7 +29,7 @@ class Drawbridge extends FlxSprite {
 
 		this.immovable = true;
 
-		this.fall_timer = new FlxTimer();
+		this.fallTimer = new FlxTimer();
 
 		this.solid = true;
 	}
@@ -41,7 +41,7 @@ class Drawbridge extends FlxSprite {
 
 	// Turn crank
 	public function fall() {
-		this.fall_timer.start(100, fallDown);
+		this.fallTimer.start(0.1, this.fallDown, 0);
 		FlxG.sound.play(AssetPaths.bridge__mp3);
 	}
 
@@ -64,6 +64,8 @@ class Drawbridge extends FlxSprite {
 			var oldWidth:Float = this.width;
 			this.width = this.height;
 			this.height = oldWidth;
+
+			this.fallTimer.cancel();
 		}
 	}
 }

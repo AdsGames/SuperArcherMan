@@ -18,10 +18,10 @@ import allanly.Throne;
 import allanly.Tools;
 import allanly.Torch;
 import allanly.Tree;
-import allanly.Water;
 import flixel.FlxG;
 import flixel.FlxState;
 import flixel.addons.editors.tiled.TiledMap;
+import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup;
@@ -58,8 +58,9 @@ class PlayState extends FlxState {
 	private var jim:Player;
 
 	// Level
-	private var level:FlxTilemap;
-
+	private var levelFront:FlxTilemap;
+	private var levelMid:FlxTilemap;
+	private var levelBack:FlxTilemap;
 	private var levelCollide:FlxTilemap;
 
 	// Our class constructor
@@ -96,15 +97,12 @@ class PlayState extends FlxState {
 		// Load map :D
 		loadMap(levelOn);
 
-		// Scroll that map
-		FlxG.camera.follow(jim);
-
 		// Pickup jims bow
 		jim.pickupBow();
 
-		// Zoom
-		// FlxG.camera.setBounds(0, 0, mapBack.widthInTiles * 16, mapBack.heightInTiles * 16);
-		FlxG.camera.follow(jim);
+		// Zoom and follow
+		// FlxG.camera.setScrollBounds(0, 0, levelBack.width, levelBack.height);
+		FlxG.camera.follow(jim, PLATFORMER, 1);
 	}
 
 	// HINT: THIS UPDATES
@@ -113,17 +111,17 @@ class PlayState extends FlxState {
 		FlxG.collide(characters, levelCollide);
 		FlxG.collide(jim, levelCollide);
 		FlxG.collide(jim.getArrows(), levelCollide);
-		FlxG.overlap(jim.getArrows(), doors, hit_door_arrow);
+		FlxG.overlap(jim.getArrows(), doors, hitDoorArrow);
 
 		// kill "friends"
-		FlxG.overlap(jim.getArrows(), characters, hit_enemy);
+		FlxG.overlap(jim.getArrows(), characters, hitEnemy);
 
 		// Ladders
 		jim.onLadder(FlxG.overlap(jim, ladders, jim.ladderPosition));
 
 		// Door action
-		FlxG.overlap(jim, doors, collide_door);
-		FlxG.overlap(characters, doors, collide_door);
+		FlxG.overlap(jim, doors, collideDoor);
+		FlxG.overlap(characters, doors, collideDoor);
 
 		// Run into draw bridge
 		FlxG.collide(jim, gameDrawbridge);
@@ -161,12 +159,12 @@ class PlayState extends FlxState {
 	}
 
 	// Door actions
-	private function collide_door(player:Character, door:Door) {
+	private function collideDoor(player:Character, door:Door) {
 		door.hitDoor(player.velocity.x);
 	}
 
 	// Arrows through door
-	private function hit_door_arrow(arrow:Arrow, door:Door) {
+	private function hitDoorArrow(arrow:Arrow, door:Door) {
 		// Door is closed
 		if (!arrow.dead && (door.scale.x <= 0.2 || door.scale.x >= -0.2)) {
 			arrow.velocity.x /= 1.2;
@@ -176,7 +174,7 @@ class PlayState extends FlxState {
 	}
 
 	// Enemy actions
-	private function hit_enemy(arrow:Arrow, enemy:Enemy) {
+	private function hitEnemy(arrow:Arrow, enemy:Enemy) {
 		if (arrow.velocity.x != 0 && arrow.velocity.y != 0) {
 			enemy.getHit(arrow.velocity.x / Math.cos(arrow.angle));
 			arrow.velocity.x *= -0.1;
@@ -194,7 +192,15 @@ class PlayState extends FlxState {
 	private function loadMap(levelOn) {
 		trace("Loading Map!");
 
-		level = new FlxTilemap();
+		levelFront = new FlxTilemap();
+		levelMid = new FlxTilemap();
+		levelBack = new FlxTilemap();
+		levelCollide = new FlxTilemap();
+
+		add(levelBack);
+		add(levelMid);
+		add(levelFront);
+		add(levelCollide);
 
 		// Tiles for level
 		var spritesheet:String = "";
@@ -203,17 +209,17 @@ class PlayState extends FlxState {
 		if (levelOn == 1) {
 			spritesheet = AssetPaths.level1_tiles__png;
 			tmx = new TiledMap(AssetPaths.level1_map__tmx);
-			// FlxG.bgColor = 0xFF0094FE;
+			bgColor = 0xFF0094FE;
 		}
 		else if (levelOn == 2) {
-			spritesheet = AssetPaths.level1_tiles__png;
-			tmx = new TiledMap(AssetPaths.level1_map__tmx);
-			// FlxG.bgColor = 0xFF76C4FC;
+			spritesheet = AssetPaths.level2_tiles__png;
+			tmx = new TiledMap(AssetPaths.level2_map__tmx);
+			bgColor = 0xFF76C4FC;
 		}
 		else if (levelOn == 3) {
-			spritesheet = AssetPaths.level1_tiles__png;
-			tmx = new TiledMap(AssetPaths.level1_map__tmx);
-			// FlxG.bgColor = 0xFF080038;
+			spritesheet = AssetPaths.level3_tiles__png;
+			tmx = new TiledMap(AssetPaths.level3_map__tmx);
+			bgColor = 0xFF080038;
 		}
 		else {
 			return;
@@ -222,12 +228,21 @@ class PlayState extends FlxState {
 		for (layer in tmx.layers) {
 			if (layer.type == TILE) {
 				var tileLayer:TiledTileLayer = cast(layer, TiledTileLayer);
-
 				if (layer.name == "collide") {
-					levelCollide.loadMapFromCSV(tileLayer.csvData, spritesheet, 32, 32);
+					levelCollide.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelCollide.follow();
 				}
-				else {
-					level.loadMapFromCSV(tileLayer.csvData, spritesheet, 32, 32);
+				else if (layer.name == "front") {
+					levelFront.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelFront.follow();
+				}
+				else if (layer.name == "back") {
+					levelBack.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelBack.follow();
+				}
+				else if (layer.name == "mid") {
+					levelMid.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelMid.follow();
 				}
 			}
 			else if (layer.type == OBJECT) {
@@ -241,62 +256,63 @@ class PlayState extends FlxState {
 	private function spawnObjects(group:TiledObjectLayer) {
 		// Spawn stuff
 		for (obj in group.objects) {
-			trace("Adding " + obj.type + " at x:" + obj.x + " y:" + obj.y + " width:" + obj.width + " height:" + obj.height);
+			spawnObject(obj);
+		}
+	}
 
-			// Add game objects based on the 'type' property
-			switch (obj.type) {
-				case "player":
-					jim.x = obj.x;
-					jim.y = obj.y;
-					add(jim);
-					gameSpawn = new Spawn(obj.x, obj.y, obj.width, obj.height);
-					return;
-				case "enemy":
-					var enemy = new Enemy(jim, obj.x, obj.y);
-					characters.add(enemy);
-					add(enemy);
-					enemy.pickupSword();
-					return;
-				case "door":
-					add(new Door(obj.x, obj.y));
-					doors.add(new Door(obj.x, obj.y));
-					return;
-				case "torch":
-					add(new Torch(obj.x, obj.y));
-					return;
-				case "tree":
-					add(new Tree(obj.x, obj.y));
-					return;
-				case "ladder":
-					ladders.add(new Ladder(obj.x, obj.y, obj.width, obj.height));
-					return;
-				case "crown":
-					gameCrown.x = obj.x;
-					gameCrown.y = obj.y;
-					add(gameCrown);
-					return;
-				case "painting":
-					add(new Painting(obj.x, obj.y));
-					return;
-				case "throne":
-					var newThrone = new Throne(obj.x, obj.y);
-					add(newThrone);
-					return;
-				case "drawBridge":
-					gameDrawbridge = new Drawbridge(obj.x, obj.y, obj.width, obj.height);
-					add(gameDrawbridge);
-					return;
-				case "crank":
-					gameCrank.x = obj.x;
-					gameCrank.y = obj.y;
-					add(gameCrank);
-					return;
-				case "water":
-					var water = new Water(obj.x, obj.y, obj.width, obj.height);
-					return;
-				default:
-					return;
-			}
+	private function spawnObject(obj:TiledObject) {
+		trace("Adding " + obj.type + " at x:" + obj.x + " y:" + obj.y + " width:" + obj.width + " height:" + obj.height);
+
+		// Add game objects based on the 'type' property
+		switch (obj.type) {
+			case "player":
+				jim.setPosition(obj.x, obj.y);
+				add(jim);
+				gameSpawn = new Spawn(obj.x, obj.y, obj.width, obj.height);
+				return;
+			case "enemy":
+				var enemy = new Enemy(jim, obj.x, obj.y);
+				characters.add(enemy);
+				add(enemy);
+				enemy.pickupSword();
+				return;
+			case "door":
+				var door = new Door(obj.x, obj.y);
+				add(door);
+				doors.add(door);
+				return;
+			case "torch":
+				add(new Torch(obj.x, obj.y));
+				return;
+			case "tree":
+				add(new Tree(obj.x, obj.y));
+				return;
+			case "ladder":
+				ladders.add(new Ladder(obj.x, obj.y, obj.width, obj.height));
+				return;
+			case "crown":
+				gameCrown.setPosition(obj.x, obj.y);
+				add(gameCrown);
+				return;
+			case "painting":
+				add(new Painting(obj.x, obj.y));
+				return;
+			case "throne":
+				add(new Throne(obj.x, obj.y));
+				return;
+			case "drawBridge":
+				gameDrawbridge = new Drawbridge(obj.x, obj.y, obj.width, obj.height);
+				add(gameDrawbridge);
+				return;
+			case "crank":
+				gameCrank.setPosition(obj.x, obj.y);
+				add(gameCrank);
+				return;
+			case "water":
+				// var water = new Water(obj.x, obj.y, obj.width, obj.height);
+				return;
+			default:
+				return;
 		}
 	}
 }

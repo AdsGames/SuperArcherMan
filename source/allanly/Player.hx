@@ -8,27 +8,26 @@ package allanly;
  */
 // Imports
 import allanly.Bow;
-import flash.events.TimerEvent;
-import flash.utils.Timer;
 import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.group.FlxGroup;
-import flixel.math.FlxPoint;
+import flixel.util.FlxTimer;
 
 class Player extends Character {
 	// Timers
-	private var dieTimer:Timer;
 	private var counter:Int = 0;
 
 	// Variables
-	private var movementSpeed:Float = 160;
-	private var isLadder:Bool = false;
+	private var isOnLadder:Bool = false;
 	private var ladderX:Float = 0;
 	private var dead:Bool = false;
 	private var hasWon:Bool = false;
 
+	// Constants
+	private var JUMP_VELOCITY:Float = 250.0;
+	private var DEATH_TIMER:Float = 3;
+	private var MOVEMENT_SPEED:Float = 200;
+
 	// Shooting
-	private var jims_bow:Bow;
+	private var bow:Bow;
 
 	// Make character
 	public function new(x:Float = 0, y:Float = 0) {
@@ -43,12 +42,8 @@ class Player extends Character {
 		this.animation.add("die", [12, 13, 14, 15, 16], 5, false);
 		this.animation.play("idle");
 
-		// Timer
-		dieTimer = new Timer(1000);
-		dieTimer.addEventListener(TimerEvent.TIMER, counterFunction);
-
 		// Add blank arm
-		jims_bow = new Bow(this.y + 2, this.x + 3, 0);
+		this.bow = new Bow(this.y + 2, this.x + 3, 0);
 
 		// Say a little something on creation
 		var randomSaying:Int = Tools.myRandom(0, 4);
@@ -71,23 +66,25 @@ class Player extends Character {
 		// Update parent
 		super.update(elapsed);
 
+		trace(elapsed);
+
 		// Kill urself
-		if (!dead && FlxG.keys.pressed.K) {
-			die();
+		if (!this.dead && FlxG.keys.pressed.K) {
+			this.die();
 		}
 
 		// Move around
-		move();
+		this.move(elapsed);
 	}
 
 	// Move character
-	override public function move() {
-		this.ignoreGravity = isLadder;
-		if (!dead) {
+	override public function move(elapsed:Float) {
+		this.ignoreGravity = this.isOnLadder;
+		if (!this.dead) {
 			// Move that character
 			// Right
-			if (FlxG.keys.pressed.G) {
-				velocity.x = movementSpeed;
+			if (FlxG.keys.pressed.D) {
+				this.velocity.x = this.MOVEMENT_SPEED;
 				this.animation.play("walk");
 				// Flip
 				if (this.scale.x < 0) {
@@ -96,7 +93,7 @@ class Player extends Character {
 			}
 			// Left
 			if (FlxG.keys.pressed.A) {
-				velocity.x = -movementSpeed;
+				this.velocity.x = -this.MOVEMENT_SPEED;
 				this.animation.play("walk");
 				// Flip
 				if (this.scale.x > 0) {
@@ -104,7 +101,7 @@ class Player extends Character {
 				}
 			}
 			// Ladder
-			if (isLadder) {
+			if (this.isOnLadder) {
 				if (FlxG.keys.pressed.W) {
 					this.animation.play("climb");
 					this.y -= 1;
@@ -116,51 +113,47 @@ class Player extends Character {
 			}
 			// Jump Jump!
 			if (FlxG.keys.pressed.SPACE) {
-				this.jump(250);
+				this.jump(this.JUMP_VELOCITY);
 			}
-			// Idleingd
-			if (!FlxG.keys.pressed.A && !FlxG.keys.pressed.D && !isLadder) {
+			// Idleing
+			if (!FlxG.keys.pressed.A && !FlxG.keys.pressed.D && !isOnLadder) {
 				this.animation.play("idle");
 			}
 			// Win
-			if (hasWon && counter >= 3) {
+			if (hasWon && counter >= DEATH_TIMER) {
 				FlxG.sound.music.stop();
-				dieTimer.stop();
 				counter = 0;
 				FlxG.switchState(new MenuState());
 			}
 			// Move bow to player
-			jims_bow.setPosition(this.x, this.y);
+			bow.setPosition(this.x, this.y);
 		}
 		// Restart
-		else if (dead && counter >= 3) {
+		else if (dead && counter >= DEATH_TIMER) {
 			FlxG.sound.music.stop();
-			dieTimer.stop();
-			counter = 0;
 			FlxG.switchState(new PlayState());
 		}
 		// Menu
 		if (FlxG.keys.pressed.ESCAPE) {
 			FlxG.switchState(new MenuState());
 		}
-		super.move();
+
+		super.move(elapsed);
 	}
 
 	// Get arrows
 	public function getArrows() {
-		return jims_bow.getArrows();
+		return this.bow.getArrows();
 	}
 
 	// Die
 	public function die() {
 		if (!dead) {
 			this.animation.play("die");
-			jims_bow.x = -100;
-			jims_bow.y = -100;
+			bow.visible = false;
 			dead = true;
 			FlxG.sound.play(AssetPaths.bell__mp3);
-			counter = 0;
-			dieTimer.start();
+			this.startTimer();
 		}
 	}
 
@@ -168,15 +161,14 @@ class Player extends Character {
 	public function win() {
 		if (!hasWon) {
 			hasWon = true;
-			counter = 0;
-			dieTimer.start();
 			FlxG.sound.play(AssetPaths.cheer__mp3);
+			this.startTimer();
 		}
 	}
 
 	// Ready to climb
 	public function onLadder(isOnLadder:Bool) {
-		isLadder = isOnLadder;
+		this.isOnLadder = isOnLadder;
 
 		if (isOnLadder == true) {
 			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S) {
@@ -186,19 +178,24 @@ class Player extends Character {
 	}
 
 	// Ready to climb
-	public function ladderPosition(newPlayer:Player, newLadder:Ladder) {
-		ladderX = newLadder.x;
+	public function ladderPosition(player:Player, ladder:Ladder) {
+		this.ladderX = ladder.x;
 	}
 
 	// Add bow
 	public function pickupBow() {
 		// Bow with max power of 12
-		jims_bow = new Bow(this.y + 2, this.x + 3, 120);
-		FlxG.state.add(jims_bow);
+		this.bow = new Bow(this.y + 2, this.x + 3, 120);
+		FlxG.state.add(bow);
 	}
 
-	// Counter
-	private function counterFunction(event:TimerEvent) {
+	private function startTimer() {
+		this.counter = 0;
+		new FlxTimer().start(1, this.incrementTimer, 0);
+	}
+
+	// Death timer
+	private function incrementTimer(timer:FlxTimer) {
 		counter++;
 	}
 }

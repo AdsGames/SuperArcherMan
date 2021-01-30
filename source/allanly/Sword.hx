@@ -9,7 +9,6 @@ package allanly;
 // Imports
 import allanly.Arm;
 import flixel.FlxObject;
-import flixel.math.FlxPoint;
 
 class Sword extends Arm {
 	// Variables
@@ -20,8 +19,8 @@ class Sword extends Arm {
 	private var parent:FlxObject;
 
 	// Create bow
-	public function new(x:Float, y:Float, newMaxPower:Float) {
-		super(x, y, AssetPaths.swordArm__png);
+	public function new(x:Float, y:Float) {
+		super(x, y, AssetPaths.sword_arm__png);
 	}
 
 	// Update bow
@@ -29,20 +28,21 @@ class Sword extends Arm {
 		super.update(elapsed);
 
 		// Spin that sword
-		if (spinDir == "right") {
-			angle += 30;
+		if (this.spinDir == "right") {
+			this.angle += 30;
 		}
-		else if (spinDir == "left") {
-			angle -= 30;
+		else if (this.spinDir == "left") {
+			this.angle -= 30;
 		}
 	}
 
 	// Change location
-	// public override function setPosition(newPosition:FlxPoint, offsetX:Int = 0, offsetY:Int = 0) {
-	// 	super.setPosition(newPosition, 5, -8);
-	// }
+	public override function setPosition(x:Float = 0, y:Float = 0) {
+		super.setPosition(x + 5, y - 8);
+	}
+
 	// SEt dir of spin
-	public function setSpinDir(newSpinDir:String) {
-		spinDir = newSpinDir;
+	public function setSpinDir(spinDir:String) {
+		this.spinDir = spinDir;
 	}
 }

@@ -22,7 +22,7 @@ class LevelSelect extends FlxState {
 	override public function create() {
 		FlxG.mouse.visible = true;
 
-		backgroundImage = new FlxSprite(0, 0, AssetPaths.level__pdn);
+		backgroundImage = new FlxSprite(0, 0, AssetPaths.level__png);
 		add(backgroundImage);
 
 		level1Button = new FlxButton(175, 245, "Enter", launchLevel1);
