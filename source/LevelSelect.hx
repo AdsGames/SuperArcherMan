@@ -1,11 +1,11 @@
-package {
+package;
 
-	import org.flixel.*;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.FlxState;
+import flixel.ui.FlxButton;
 
-public class LevelSelect extends FlxState
-{
-	[Embed(source = "../assets/images/level.png")] private var picLevelSelect:Class;
-
+class LevelSelect extends FlxState {
 	private var backButton:FlxButton;
 
 	private var backgroundImage:FlxSprite;
@@ -14,14 +14,15 @@ public class LevelSelect extends FlxState
 	private var level2Button:FlxButton;
 	private var level3Button:FlxButton;
 
-	public function LevelSelect() {}
+	public function new() {
+		super();
+	}
 
 	// Init game
-	override public function create():void
-	{
-		FlxG.mouse.show();
+	override public function create() {
+		FlxG.mouse.visible = true;
 
-		backgroundImage = new FlxSprite(0, 0, picLevelSelect);
+		backgroundImage = new FlxSprite(0, 0, AssetPaths.level__pdn);
 		add(backgroundImage);
 
 		level1Button = new FlxButton(175, 245, "Enter", launchLevel1);
@@ -36,33 +37,28 @@ public class LevelSelect extends FlxState
 	}
 
 	// Back
-	private function backMenu():void
-	{
-		FlxG.switchState(new MenuState);
+	private function backMenu() {
+		FlxG.switchState(new MenuState());
 	}
 
 	// 1
-	private function launchLevel1():void
-	{
-		FlxG.music.stop();
+	private function launchLevel1() {
+		FlxG.sound.music.stop();
 		PlayState.levelOn = 1;
-		FlxG.switchState(new PlayState);
+		FlxG.switchState(new PlayState());
 	}
 
 	// 2
-	private function launchLevel2():void
-	{
-		FlxG.music.stop();
+	private function launchLevel2() {
+		FlxG.sound.music.stop();
 		PlayState.levelOn = 2;
-		FlxG.switchState(new PlayState);
+		FlxG.switchState(new PlayState());
 	}
 
 	// 3
-	private function launchLevel3():void
-	{
-		FlxG.music.stop();
+	private function launchLevel3() {
+		FlxG.sound.music.stop();
 		PlayState.levelOn = 3;
-		FlxG.switchState(new PlayState);
+		FlxG.switchState(new PlayState());
 	}
-}
 }
