@@ -13,6 +13,6 @@ class Water extends FlxSprite {
 	public function new(x:Float, y:Float, width:Int, height:Int) {
 		super(x, y + 8);
 
-		this.makeGraphic(width, height, 0xff0000FF);
+		this.makeGraphic(width, height, 0xFF0000FF);
 	}
 }

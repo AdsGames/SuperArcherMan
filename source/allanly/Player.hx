@@ -7,32 +7,38 @@ package allanly;
  * 29/5/2015
  */
 // Imports
-import allanly.Bow;
 import flixel.FlxG;
+import flixel.group.FlxGroup;
 import flixel.util.FlxTimer;
 
 class Player extends Character {
 	// Timers
-	private var counter:Int = 0;
+	private var counter:Int;
 
 	// Variables
-	private var isOnLadder:Bool = false;
-	private var ladderX:Float = 0;
-	private var dead:Bool = false;
-	private var hasWon:Bool = false;
+	private var isOnLadder:Bool;
+	private var ladderX:Float;
+	private var dead:Bool;
+	private var hasWon:Bool;
 
 	// Constants
-	private var JUMP_VELOCITY:Float = 250.0;
-	private var DEATH_TIMER:Float = 3;
-	private var MOVEMENT_SPEED:Float = 200;
-
-	// Shooting
-	private var bow:Bow;
+	private static inline final JUMP_VELOCITY:Float = 250.0;
+	private static inline final DEATH_TIMER:Float = 3;
+	private static inline final MOVEMENT_SPEED:Float = 200;
 
 	// Make character
 	public function new(x:Float = 0, y:Float = 0) {
 		// Create jim
 		super(x, y, AssetPaths.player__png);
+
+		// Default values
+		this.counter = 0;
+
+		// Variables
+		this.isOnLadder = false;
+		this.ladderX = 0;
+		this.dead = false;
+		this.hasWon = false;
 
 		// Images and animations
 		loadGraphic(AssetPaths.player__png, true, 14, 30);
@@ -41,9 +47,6 @@ class Player extends Character {
 		this.animation.add("climb", [8, 9, 10, 11], 5, true);
 		this.animation.add("die", [12, 13, 14, 15, 16], 5, false);
 		this.animation.play("idle");
-
-		// Add blank arm
-		this.bow = new Bow(this.y + 2, this.x + 3, 0);
 
 		// Say a little something on creation
 		var randomSaying:Int = Tools.myRandom(0, 4);
@@ -66,8 +69,6 @@ class Player extends Character {
 		// Update parent
 		super.update(elapsed);
 
-		trace(elapsed);
-
 		// Kill urself
 		if (!this.dead && FlxG.keys.pressed.K) {
 			this.die();
@@ -84,7 +85,7 @@ class Player extends Character {
 			// Move that character
 			// Right
 			if (FlxG.keys.pressed.D) {
-				this.velocity.x = this.MOVEMENT_SPEED;
+				this.velocity.x = MOVEMENT_SPEED;
 				this.animation.play("walk");
 				// Flip
 				if (this.scale.x < 0) {
@@ -93,7 +94,7 @@ class Player extends Character {
 			}
 			// Left
 			if (FlxG.keys.pressed.A) {
-				this.velocity.x = -this.MOVEMENT_SPEED;
+				this.velocity.x = -MOVEMENT_SPEED;
 				this.animation.play("walk");
 				// Flip
 				if (this.scale.x > 0) {
@@ -113,7 +114,7 @@ class Player extends Character {
 			}
 			// Jump Jump!
 			if (FlxG.keys.pressed.SPACE) {
-				this.jump(this.JUMP_VELOCITY);
+				this.jump(JUMP_VELOCITY);
 			}
 			// Idleing
 			if (!FlxG.keys.pressed.A && !FlxG.keys.pressed.D && !isOnLadder) {
@@ -125,14 +126,12 @@ class Player extends Character {
 				counter = 0;
 				FlxG.switchState(new MenuState());
 			}
-			// Move bow to player
-			bow.setPosition(this.x, this.y);
 		}
-		// Restart
 		else if (dead && counter >= DEATH_TIMER) {
 			FlxG.sound.music.stop();
-			FlxG.switchState(new PlayState());
+			FlxG.switchState(new PlayState(PlayState.levelOn));
 		}
+
 		// Menu
 		if (FlxG.keys.pressed.ESCAPE) {
 			FlxG.switchState(new MenuState());
@@ -142,15 +141,19 @@ class Player extends Character {
 	}
 
 	// Get arrows
-	public function getArrows() {
-		return this.bow.getArrows();
+	public function getArrows():FlxGroup {
+		var bow = Std.downcast(this.getArm(), Bow);
+		if (bow != null) {
+			return bow.getArrows();
+		}
+		return null;
 	}
 
 	// Die
 	public function die() {
 		if (!dead) {
 			this.animation.play("die");
-			bow.visible = false;
+			arm.visible = false;
 			dead = true;
 			FlxG.sound.play(AssetPaths.bell__mp3);
 			this.startTimer();
@@ -170,7 +173,7 @@ class Player extends Character {
 	public function onLadder(isOnLadder:Bool) {
 		this.isOnLadder = isOnLadder;
 
-		if (isOnLadder == true) {
+		if (isOnLadder) {
 			if (FlxG.keys.pressed.W || FlxG.keys.pressed.S) {
 				this.x = ladderX;
 			}
@@ -182,13 +185,7 @@ class Player extends Character {
 		this.ladderX = ladder.x;
 	}
 
-	// Add bow
-	public function pickupBow() {
-		// Bow with max power of 12
-		this.bow = new Bow(this.y + 2, this.x + 3, 120);
-		FlxG.state.add(bow);
-	}
-
+	// Start power timer
 	private function startTimer() {
 		this.counter = 0;
 		new FlxTimer().start(1, this.incrementTimer, 0);

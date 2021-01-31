@@ -6,19 +6,30 @@ package allanly;
  * Top level character class
  * 29/5/2015
  */
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 class Character extends FlxSprite {
 	// Variables
-	public var jumping:Bool = false;
-	public var ignoreGravity:Bool = false;
+	private var jumping:Bool;
+	private var ignoreGravity:Bool;
+
+	// Weapon
+	private var arm:Arm;
 
 	// Acceleration (1m = 16px, gravity acceleration = 9.8m/s)
-	private static inline var GRAVITY:Float = 9.8 * 16 * 4;
+	private static inline final GRAVITY:Float = 9.8 * 16 * 4;
 
 	// Make character
 	public function new(x:Float, y:Float, img:String) {
 		super(x, y, img);
+
+		// Init vars
+		this.jumping = false;
+		this.ignoreGravity = false;
+
+		// Add blank arm
+		this.arm = new Arm();
 
 		// Gravity
 		this.acceleration.y = GRAVITY;
@@ -33,6 +44,9 @@ class Character extends FlxSprite {
 		if (this.y < 0) {
 			this.y = 0;
 		}
+
+		// Move bow to player
+		this.arm.setPosition(this.x, this.y);
 	}
 
 	// Update
@@ -53,6 +67,18 @@ class Character extends FlxSprite {
 		}
 
 		super.update(elapsed);
+	}
+
+	// Add arm
+	public function pickupArm(arm:Arm) {
+		FlxG.state.remove(this.arm);
+		this.arm = arm;
+		FlxG.state.add(this.arm);
+	}
+
+	// Get arm
+	public function getArm():Arm {
+		return this.arm;
 	}
 
 	// Jump

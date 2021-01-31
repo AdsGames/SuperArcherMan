@@ -44,21 +44,18 @@ class LevelSelect extends FlxState {
 	// 1
 	private function launchLevel1() {
 		FlxG.sound.music.stop();
-		PlayState.levelOn = 1;
-		FlxG.switchState(new PlayState());
+		FlxG.switchState(new PlayState(1));
 	}
 
 	// 2
 	private function launchLevel2() {
 		FlxG.sound.music.stop();
-		PlayState.levelOn = 2;
-		FlxG.switchState(new PlayState());
+		FlxG.switchState(new PlayState(2));
 	}
 
 	// 3
 	private function launchLevel3() {
 		FlxG.sound.music.stop();
-		PlayState.levelOn = 3;
-		FlxG.switchState(new PlayState());
+		FlxG.switchState(new PlayState(3));
 	}
 }

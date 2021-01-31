@@ -7,7 +7,6 @@ package allanly;
  * 11/6/2015
  */
 // Libraries
-import allanly.Tools;
 import flixel.FlxSprite;
 
 class Cloud extends FlxSprite {
@@ -22,7 +21,7 @@ class Cloud extends FlxSprite {
 	}
 
 	// Update
-	public override function update(elapsed:Float) {
+	override public function update(elapsed:Float) {
 		// Update parent
 		super.update(elapsed);
 	}

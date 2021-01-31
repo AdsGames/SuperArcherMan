@@ -7,9 +7,6 @@ package allanly;
  * 1/6/2015
  */
 // Libraries
-import allanly.Sword;
-import allanly.Tools;
-import flixel.FlxG;
 import flixel.math.FlxPoint;
 import flixel.system.FlxSound;
 
@@ -17,21 +14,21 @@ import flixel.system.FlxSound;
 class Enemy extends Character {
 	private var heySound:FlxSound;
 
-	// Shooting
-	private var sword:Sword;
-
 	// Variables
-	private var detected:Bool = false;
+	private var detected:Bool;
 
 	// Pointer to jim
 	private var jimPointer:Character;
 
 	// Constants
-	private var MOVEMENT_SPEED:Int = 200;
+	private static inline final MOVEMENT_SPEED:Int = 200;
 
 	// Create enemy
 	public function new(jimPointer:Character, x:Float = 0, y:Float = 0) {
 		super(x, y - 40, AssetPaths.enemy__png);
+
+		// Init vars
+		this.detected = false;
 
 		// Images and animations
 		loadGraphic(AssetPaths.enemy__png, true, 14, 30);
@@ -72,10 +69,15 @@ class Enemy extends Character {
 			this.heySound.proximity(this.x, this.y, this.jimPointer, 800, true);
 			this.heySound.play();
 		}
-		// Right
+
+		// Downcast sword
+		var sword = Std.downcast(this.arm, Sword);
+
 		if (detected && this.x < jimPointer.x) {
-			this.sword.setSpinDir("right");
-			this.velocity.x = this.MOVEMENT_SPEED;
+			if (sword != null) {
+				sword.setSpinDir("right");
+			}
+			this.velocity.x = MOVEMENT_SPEED;
 			this.animation.play("walk");
 
 			// Flip
@@ -83,25 +85,26 @@ class Enemy extends Character {
 				this.scale.x *= -1;
 			}
 		}
-		// Left
 		else if (detected && this.x > jimPointer.x) {
-			this.sword.setSpinDir("left");
-			this.velocity.x = -this.MOVEMENT_SPEED;
+			if (sword != null) {
+				sword.setSpinDir("left");
+			}
+			this.velocity.x = -MOVEMENT_SPEED;
 			this.animation.play("walk");
-
 			// Flip
 			if (this.scale.x > 0) {
 				this.scale.x *= -1;
 			}
 		}
-		// Idleing
 		else {
-			sword.setSpinDir("none");
+			if (sword != null) {
+				sword.setSpinDir("none");
+			}
 			this.animation.play("idle");
 		}
 
 		// Move sword to self
-		this.sword.setPosition(this.x, this.y);
+		this.arm.setPosition(this.x, this.y);
 
 		// Parent move
 		super.move(elapsed);
@@ -110,12 +113,5 @@ class Enemy extends Character {
 	// Get hit
 	public function getHit(velocity:Float) {
 		this.health -= Math.abs(velocity);
-	}
-
-	// Give sword
-	public function pickupSword() {
-		// Nice sword
-		this.sword = new Sword(this.y + 1, this.x + 9);
-		FlxG.state.add(this.sword);
 	}
 }

@@ -7,7 +7,6 @@ package allanly;
  * 11/6/2015
  */
 // Libraries
-import allanly.Tools;
 import flixel.FlxSprite;
 
 // Torch
@@ -25,7 +24,7 @@ class Painting extends FlxSprite {
 	}
 
 	// Update
-	public override function update(elapsed:Float) {
+	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
 		if (Tools.myRandom(0, 500) == 1) {

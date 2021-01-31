@@ -3,6 +3,7 @@ package;
 // Imports
 import allanly.Arrow;
 import allanly.Background;
+import allanly.Bow;
 import allanly.Character;
 import allanly.Cloud;
 import allanly.Crank;
@@ -14,6 +15,7 @@ import allanly.Ladder;
 import allanly.Painting;
 import allanly.Player;
 import allanly.Spawn;
+import allanly.Sword;
 import allanly.Throne;
 import allanly.Tools;
 import allanly.Torch;
@@ -25,21 +27,22 @@ import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup;
+import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
 
 // THE GAME!
 class PlayState extends FlxState {
 	// Level Number
-	public static var levelOn:Int = 0;
+	public static var levelOn:Int;
 
 	// Background
-	public var sceneBackground:Background;
+	private var sceneBackground:Background;
 
 	// Group to hold all the guys
-	public var characters:FlxGroup;
+	private var characters:FlxGroup;
 
 	// Hold ladders
-	public var ladders:FlxGroup;
+	private var ladders:FlxGroup;
 
 	// Hold doors
 	private var doors:FlxGroup;
@@ -52,10 +55,13 @@ class PlayState extends FlxState {
 	private var gameCrown:Crown;
 
 	// Spawn point
-	public var gameSpawn:Spawn;
+	private var gameSpawn:Spawn;
 
 	// Player
 	private var jim:Player;
+
+	// Power text
+	private var powerText:FlxText;
 
 	// Level
 	private var levelFront:FlxTilemap;
@@ -64,8 +70,10 @@ class PlayState extends FlxState {
 	private var levelCollide:FlxTilemap;
 
 	// Our class constructor
-	public function new() {
+	public function new(levelOn:Int) {
 		super();
+
+		PlayState.levelOn = levelOn;
 	}
 
 	// Creates some stuff
@@ -94,11 +102,12 @@ class PlayState extends FlxState {
 		gameDrawbridge = new Drawbridge(-100, -100, 0, 0);
 		gameSpawn = new Spawn(-100, -100, 0, 0);
 
-		// Pickup jims bow
-		jim.pickupBow();
-
 		// Load map :D
 		loadMap(levelOn);
+
+		// Power text
+		this.powerText = new FlxText(0, 0, 0, "");
+		FlxG.state.add(this.powerText);
 
 		// Zoom and follow
 		// FlxG.camera.setScrollBounds(0, 0, levelBack.width, levelBack.height);
@@ -107,6 +116,15 @@ class PlayState extends FlxState {
 
 	// HINT: THIS UPDATES
 	override public function update(elapsed:Float) {
+		// Move power text to mouse
+		this.powerText.x = FlxG.mouse.x + 15;
+		this.powerText.y = FlxG.mouse.y;
+
+		var bow = Std.downcast(jim.getArm(), Bow);
+		if (bow != null) {
+			this.powerText.text = "" + bow.getPower() + "%";
+		}
+
 		// Collide everybuddy
 		FlxG.collide(characters, levelCollide);
 		FlxG.collide(jim, levelCollide);
@@ -185,12 +203,9 @@ class PlayState extends FlxState {
 		}
 	}
 
-	/********************
-	 * MAP LOADING HERE *
-	********************/
 	// Load each layer
-	private function loadMap(levelOn) {
-		trace("Loading Map!");
+	private function loadMap(levelOn:Int) {
+		// trace("Loading Map!");
 
 		levelFront = new FlxTilemap();
 		levelMid = new FlxTilemap();
@@ -262,20 +277,21 @@ class PlayState extends FlxState {
 	}
 
 	private function spawnObject(obj:TiledObject) {
-		trace("Adding " + obj.type + " at x:" + obj.x + " y:" + obj.y + " width:" + obj.width + " height:" + obj.height);
+		// trace("Adding " + obj.type + " at x:" + obj.x + " y:" + obj.y + " width:" + obj.width + " height:" + obj.height);
 
 		// Add game objects based on the 'type' property
 		switch (obj.type) {
 			case "player":
 				jim.setPosition(obj.x, obj.y);
 				add(jim);
+				jim.pickupArm(new Bow(600.0, 1.0, 100.0));
 				gameSpawn = new Spawn(obj.x, obj.y, obj.width, obj.height);
 				return;
 			case "enemy":
 				var enemy = new Enemy(jim, obj.x, obj.y);
 				characters.add(enemy);
 				add(enemy);
-				enemy.pickupSword();
+				enemy.pickupArm(new Sword());
 				return;
 			case "door":
 				var door = new Door(obj.x, obj.y);
