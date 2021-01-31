@@ -21,7 +21,7 @@ class Enemy extends Character {
 	private var jimPointer:Character;
 
 	// Constants
-	private final movementSpeed:Int = 200;
+	private static inline final MOVEMENT_SPEED:Int = 200;
 
 	// Create enemy
 	public function new(jimPointer:Character, x:Float = 0, y:Float = 0) {
@@ -77,7 +77,7 @@ class Enemy extends Character {
 			if (sword != null) {
 				sword.setSpinDir("right");
 			}
-			this.velocity.x = this.movementSpeed;
+			this.velocity.x = MOVEMENT_SPEED;
 			this.animation.play("walk");
 
 			// Flip
@@ -89,7 +89,7 @@ class Enemy extends Character {
 			if (sword != null) {
 				sword.setSpinDir("left");
 			}
-			this.velocity.x = -this.movementSpeed;
+			this.velocity.x = -MOVEMENT_SPEED;
 			this.animation.play("walk");
 			// Flip
 			if (this.scale.x > 0) {

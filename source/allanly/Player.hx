@@ -22,9 +22,9 @@ class Player extends Character {
 	private var hasWon:Bool;
 
 	// Constants
-	private final jumpVelocity:Float = 250.0;
-	private final deathTimer:Float = 3;
-	private final movementSpeed:Float = 200;
+	private static inline final JUMP_VELOCITY:Float = 250.0;
+	private static inline final DEATH_TIMER:Float = 3;
+	private static inline final MOVEMENT_SPEED:Float = 200;
 
 	// Make character
 	public function new(x:Float = 0, y:Float = 0) {
@@ -85,7 +85,7 @@ class Player extends Character {
 			// Move that character
 			// Right
 			if (FlxG.keys.pressed.D) {
-				this.velocity.x = this.movementSpeed;
+				this.velocity.x = MOVEMENT_SPEED;
 				this.animation.play("walk");
 				// Flip
 				if (this.scale.x < 0) {
@@ -94,7 +94,7 @@ class Player extends Character {
 			}
 			// Left
 			if (FlxG.keys.pressed.A) {
-				this.velocity.x = -this.movementSpeed;
+				this.velocity.x = -MOVEMENT_SPEED;
 				this.animation.play("walk");
 				// Flip
 				if (this.scale.x > 0) {
@@ -114,20 +114,20 @@ class Player extends Character {
 			}
 			// Jump Jump!
 			if (FlxG.keys.pressed.SPACE) {
-				this.jump(this.jumpVelocity);
+				this.jump(JUMP_VELOCITY);
 			}
 			// Idleing
 			if (!FlxG.keys.pressed.A && !FlxG.keys.pressed.D && !isOnLadder) {
 				this.animation.play("idle");
 			}
 			// Win
-			if (hasWon && counter >= deathTimer) {
+			if (hasWon && counter >= DEATH_TIMER) {
 				FlxG.sound.music.stop();
 				counter = 0;
 				FlxG.switchState(new MenuState());
 			}
 		}
-		else if (dead && counter >= deathTimer) {
+		else if (dead && counter >= DEATH_TIMER) {
 			FlxG.sound.music.stop();
 			FlxG.switchState(new PlayState(PlayState.levelOn));
 		}
