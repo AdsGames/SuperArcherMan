@@ -57,7 +57,7 @@ class Character extends FlxSprite {
 
 	// Jump
 	public function jump(magnitude:Float) {
-		if (!this.jumping) {
+		if (!this.jumping && !this.ignoreGravity) {
 			this.y -= 4;
 			this.velocity.y = -magnitude;
 			this.jumping = true;
