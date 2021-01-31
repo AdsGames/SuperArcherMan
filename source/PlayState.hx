@@ -94,11 +94,11 @@ class PlayState extends FlxState {
 		gameDrawbridge = new Drawbridge(-100, -100, 0, 0);
 		gameSpawn = new Spawn(-100, -100, 0, 0);
 
-		// Load map :D
-		loadMap(levelOn);
-
 		// Pickup jims bow
 		jim.pickupBow();
+
+		// Load map :D
+		loadMap(levelOn);
 
 		// Zoom and follow
 		// FlxG.camera.setScrollBounds(0, 0, levelBack.width, levelBack.height);
@@ -219,29 +219,32 @@ class PlayState extends FlxState {
 		else if (levelOn == 3) {
 			spritesheet = AssetPaths.level3_tiles__png;
 			tmx = new TiledMap(AssetPaths.level3_map__tmx);
-			bgColor = 0xFF080038;
 		}
 		else {
 			return;
 		}
 
+		// Set background color
+		bgColor = tmx.backgroundColor;
+
+		// Parse layers
 		for (layer in tmx.layers) {
 			if (layer.type == TILE) {
 				var tileLayer:TiledTileLayer = cast(layer, TiledTileLayer);
 				if (layer.name == "collide") {
-					levelCollide.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelCollide.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 1);
 					levelCollide.follow();
 				}
 				else if (layer.name == "front") {
-					levelFront.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelFront.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 1);
 					levelFront.follow();
 				}
 				else if (layer.name == "back") {
-					levelBack.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelBack.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 1);
 					levelBack.follow();
 				}
 				else if (layer.name == "mid") {
-					levelMid.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 0);
+					levelMid.loadMapFromArray(tileLayer.tileArray, tileLayer.width, tileLayer.height, spritesheet, 16, 16, OFF, 1);
 					levelMid.follow();
 				}
 			}

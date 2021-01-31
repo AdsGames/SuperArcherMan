@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="30" tilewidth="16" tileheight="16" nextobjectid="42">
- <tileset firstgid="1" name="tilemapflat" tilewidth="16" tileheight="16">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="100" height="30" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#0094fe" nextlayerid="6" nextobjectid="42">
+ <tileset firstgid="1" name="tilemapflat" tilewidth="16" tileheight="16" tilecount="61" columns="61">
   <image source="level1_tiles.png" width="976" height="16"/>
  </tileset>
- <layer name="back" width="100" height="30">
+ <layer id="1" name="back" width="100" height="30">
   <data encoding="base64" compression="zlib">
    eJztlksOwyAMBVH6S3OA5v43rVh0QwN1G/yhmZFmhRQsP0xICQAAAAAARuRaCL6QRyzIIxYj5vHwLuBPOQk8u1Vny5Rk/dD0NZO5lnvFm1YDgnFJ73dVRI+SR8a715Hz8Piv5n3mjb2zi3C9h1NjLUIeFnBftbGej5HzWDv1oAV5xMqj7I/2nFrlUXvHSl02arfKw/LdPaf9vWqpOeMWeXhSO9tr4adZkFB+81e16FXfN3X23hP3ZeJdHyIiIiLG8gnCPFDw
   </data>
  </layer>
- <layer name="mid" width="100" height="30">
+ <layer id="2" name="mid" width="100" height="30">
   <data encoding="base64" compression="zlib">
    eJzt1UEKwCAMBEAfUvr/Z/YkpUWQXrKBzlxzcHUhjgEAAAAAcDvSAVg60wEK7e7a4S06ZKjSuY+5r9J9VJ7fuY8pnSHZx/sP3c0r/LmPr/MK6Qz6eEpn0AcAAACsXQ5rA30=
   </data>
  </layer>
- <layer name="collide" width="100" height="30">
+ <layer id="3" name="collide" width="100" height="30">
   <data encoding="base64" compression="zlib">
    eJzt100PwiAMBuDe5+ZX3I7OTOP//4eOA45UtsEshej7JD04Egd0UCACAAAAAFjXjLFjUWft0X9rPM8O6r0AC/koiy8fvXYn4O3qeaa1PqoxToHBa1qr1EdNA4XPR4o4R/SVfyNdzEAh2rDSjnzoOtL8OjJ+NR/uuO2e7I79Rp9zIbXnfEMzH+YOZuaB16yKpjuapL0Txp2mubfM70dgu4TS9is7ZpsTe/aQHHPJtuxXqc9Y/C7QJ35faXxnb8t3Bk+9Rng+tO4BS/XB185rjEYNyZEPmId8yOB38JqW12PMOS5FPp5jXIQj5J2mFro1lO9BWyL0P6R0JDt/LeVZc1jnurqAAAAAAABwvQBY/RQy
   </data>
  </layer>
- <layer name="front" width="100" height="30">
+ <layer id="4" name="front" width="100" height="30">
   <data encoding="base64" compression="zlib">
    eJzt0DEKgDAMQNEcopPdvP8hXRxCaBWchLwHgULS5UcAAAAAAPRy3sPeUyP9AAC+GeU90num3Sy7+j/fdpF75F6rPmNxF9GzW1fHywAAAP92AcadA2s=
   </data>
  </layer>
- <objectgroup name="objects">
+ <objectgroup id="5" name="objects">
   <object id="1" type="door" x="464" y="304" width="16" height="32"/>
   <object id="2" type="player" x="49.1818" y="286.545" width="52.4546" height="81.2732"/>
   <object id="4" type="door" x="960" y="256" width="16" height="32"/>
