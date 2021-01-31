@@ -209,12 +209,10 @@ class PlayState extends FlxState {
 		if (levelOn == 1) {
 			spritesheet = AssetPaths.level1_tiles__png;
 			tmx = new TiledMap(AssetPaths.level1_map__tmx);
-			bgColor = 0xFF0094FE;
 		}
 		else if (levelOn == 2) {
 			spritesheet = AssetPaths.level2_tiles__png;
 			tmx = new TiledMap(AssetPaths.level2_map__tmx);
-			bgColor = 0xFF76C4FC;
 		}
 		else if (levelOn == 3) {
 			spritesheet = AssetPaths.level3_tiles__png;
