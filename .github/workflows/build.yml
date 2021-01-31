@@ -2,7 +2,7 @@ name: Build Haxe Project
 
 on:
   push:
-    branches: feature/pages-deploy
+    branches: master
 
 jobs:
   build:
