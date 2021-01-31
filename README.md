@@ -2,22 +2,14 @@
 
 ## Installing
 
-You will need haxelib
+You will need [haxelib](https://haxe.org/download/)
 
 ```sh
 haxelib install lime
 haxelib install openfl
 haxelib install flixel
 haxelib run lime setup flixel
-haxelib run lime setup
-haxelib install flixel-tools
 haxelib run flixel-tools setup
-```
-
-You will also need the tmx library
-
-```sh
-haxelib install tmx 0.2.0
 ```
 
 ## Running
