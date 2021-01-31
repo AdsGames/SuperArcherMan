@@ -25,3 +25,7 @@ or in vscode
 ## VS Code Extension
 
 For better development download the LIME plugin for vscode.
+
+## Demo
+
+Code is built and automatically deployed [here](https://adsgames.github.io/SuperArcherMan/)!
