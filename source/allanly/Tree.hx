@@ -21,9 +21,11 @@ class Tree extends FlxSprite {
 		this.animation.add("still", [0], 8, true);
 
 		// Only some have animation
-		if (Tools.myRandom(0, 5) == 1)
+		if (Tools.myRandom(0, 5) == 1) {
 			this.animation.play("bird");
-		else
+		}
+		else {
 			this.animation.play("still");
+		}
 	}
 }

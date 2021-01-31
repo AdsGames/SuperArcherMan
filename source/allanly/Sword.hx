@@ -7,24 +7,26 @@ package allanly;
  * 29/5/2015
  */
 // Imports
-import allanly.Arm;
 import flixel.FlxObject;
 
 class Sword extends Arm {
 	// Variables
-	private var idle:Bool = true;
-	private var spinDir:String = "none";
+	private var idle:Bool;
+	private var spinDir:String;
 
 	// Parent
 	private var parent:FlxObject;
 
 	// Create bow
-	public function new(x:Float, y:Float) {
-		super(x, y, AssetPaths.sword_arm__png);
+	public function new() {
+		super(AssetPaths.sword_arm__png);
+
+		this.idle = false;
+		this.spinDir = "none";
 	}
 
 	// Update bow
-	public override function update(elapsed:Float) {
+	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
 		// Spin that sword
@@ -37,7 +39,7 @@ class Sword extends Arm {
 	}
 
 	// Change location
-	public override function setPosition(x:Float = 0, y:Float = 0) {
+	override public function setPosition(x:Float = 0, y:Float = 0) {
 		super.setPosition(x + 5, y - 8);
 	}
 

@@ -5,7 +5,6 @@ package;
  * The Menu
  * 5/28/2015
  */
-import allanly.Tools;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -25,8 +24,18 @@ class MenuState extends FlxState {
 	override public function create() {
 		FlxG.mouse.visible = true;
 
-		// Emitter
-		emitter = new FlxEmitter(10, 10);
+		this.createEmitter();
+		this.createUI();
+		this.startMusic();
+	}
+
+	// Create emitter
+	private function createEmitter() {
+		emitter = new FlxEmitter(0, 0);
+		emitter.width = FlxG.width;
+		emitter.height = FlxG.height;
+		emitter.angularVelocity.set(50, 400);
+
 		for (i in 0...100) {
 			var particle = new FlxParticle();
 			particle.loadGraphic(AssetPaths.arrow__png);
@@ -34,29 +43,25 @@ class MenuState extends FlxState {
 			emitter.add(particle);
 		}
 
-		add(emitter);
-
 		emitter.start(false, 0.1);
+		add(emitter);
+	}
 
+	// Create UI
+	private function createUI() {
 		add(new FlxSprite(0, 0, AssetPaths.menu__png));
-
 		add(new FlxButton(280, 380, "Start Game", this.startGame));
 		add(new FlxButton(280, 420, "Instructions", this.showHelp));
+	}
 
+	// Start music
+	private function startMusic() {
 		if (FlxG.sound.music == null) {
 			FlxG.sound.playMusic(AssetPaths.menu__mp3, 1, true);
 		}
 		else if (!FlxG.sound.music.playing) {
 			FlxG.sound.music.play();
 		}
-	}
-
-	// Update
-	public override function update(elapsed:Float) {
-		super.update(elapsed);
-
-		emitter.x = Tools.myRandom(0, FlxG.width);
-		emitter.y = Tools.myRandom(0, FlxG.height);
 	}
 
 	// Start

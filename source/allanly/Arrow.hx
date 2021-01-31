@@ -7,7 +7,6 @@ package allanly;
  * 31/5/2015
  */
 // Imports
-import Math;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.system.FlxSound;
@@ -21,7 +20,7 @@ class Arrow extends FlxSprite {
 	private var bowReleaseSound:FlxSound;
 
 	// Dead arrow
-	public var dead:Bool = false;
+	public var dead:Bool;
 
 	// Create arrow
 	public function new(parent:FlxObject, x:Float = 0, y:Float = 0, angle:Float = 0, velocity:Float = 2, mass:Float = 1) {
@@ -32,6 +31,7 @@ class Arrow extends FlxSprite {
 		this.velocity.y = -Math.sin((this.angle + 90) * (Math.PI / 180)) * velocity;
 
 		this.parent = parent;
+		this.dead = false;
 
 		// Shrink box
 		offset.y = 1;
@@ -62,7 +62,7 @@ class Arrow extends FlxSprite {
 	}
 
 	// Update arrow
-	public override function update(elapsed:Float) {
+	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
 		// Update sounds

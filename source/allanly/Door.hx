@@ -7,18 +7,22 @@ package allanly;
  * 3/6/2015
  */
 // Libraries
-import Math;
 import flixel.FlxSprite;
 
 // Door (fun to kick in)
 class Door extends FlxSprite {
-	private var doorSpeed:Float = 0;
-	private var doorPosition:Float = 0;
-	private var open:Bool = false;
+	private var doorSpeed:Float;
+	private var doorPosition:Float;
+	private var open:Bool;
 
 	// Create a nice one
 	public function new(x:Float, y:Float) {
 		super(x, y, AssetPaths.door__png);
+
+		// Init vars
+		this.doorSpeed = 0;
+		this.doorPosition = 0;
+		this.open = false;
 
 		// Set orgin
 		this.origin.x = 0;
@@ -32,7 +36,7 @@ class Door extends FlxSprite {
 	}
 
 	// Update
-	public override function update(elapsed:Float) {
+	override public function update(elapsed:Float) {
 		super.update(elapsed);
 
 		// Slow down

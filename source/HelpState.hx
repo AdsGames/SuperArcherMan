@@ -6,23 +6,14 @@ import flixel.FlxState;
 import flixel.ui.FlxButton;
 
 class HelpState extends FlxState {
-	private var backButton:FlxButton;
-
-	// Title image
-	private var help:FlxSprite;
-
-	public function HelpState() {} // Init game
-
+	// Create help state
 	override public function create() {
 		FlxG.mouse.visible = true;
+		add(new FlxSprite(0, 0, AssetPaths.help__png));
+		add(new FlxButton(105, 15, "Back", backMenu));
+	}
 
-		help = new FlxSprite(0, 0, AssetPaths.help__png);
-		add(help);
-
-		backButton = new FlxButton(105, 15, "Back", backMenu);
-		add(backButton);
-	} // Start
-
+	// Start
 	private function backMenu() {
 		FlxG.switchState(new MenuState());
 	}

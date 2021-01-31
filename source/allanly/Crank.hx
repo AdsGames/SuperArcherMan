@@ -11,12 +11,15 @@ import flixel.FlxSprite;
 
 class Crank extends FlxSprite {
 	// Image
-	private var activated:Bool = false;
+	private var activated:Bool;
 
 	// Create
 	public function new(x:Float, y:Float) {
 		// Construct parent
 		super(x, y, AssetPaths.crank__png);
+
+		// Init vars
+		this.activated = false;
 
 		// Images and animations
 		loadGraphic(AssetPaths.crank__png, true, 16, 16);
