@@ -10,41 +10,41 @@ package allanly;
 import flixel.FlxObject;
 
 class Sword extends Arm {
-	// Variables
-	private var idle:Bool;
-	private var spinDir:String;
+  // Variables
+  private var idle:Bool;
+  private var spinDir:String;
 
-	// Parent
-	private var parent:FlxObject;
+  // Parent
+  private var parent:FlxObject;
 
-	// Create bow
-	public function new() {
-		super(AssetPaths.sword_arm__png);
+  // Create bow
+  public function new() {
+    super(AssetPaths.sword_arm__png);
 
-		this.idle = false;
-		this.spinDir = "none";
-	}
+    idle = false;
+    spinDir = "none";
+  }
 
-	// Update bow
-	override public function update(elapsed:Float) {
-		super.update(elapsed);
+  // Update bow
+  override public function update(elapsed:Float) {
+    super.update(elapsed);
 
-		// Spin that sword
-		if (this.spinDir == "right") {
-			this.angle += 30;
-		}
-		else if (this.spinDir == "left") {
-			this.angle -= 30;
-		}
-	}
+    // Spin that sword
+    if (spinDir == "right") {
+      angle += 30;
+    }
+    else if (spinDir == "left") {
+      angle -= 30;
+    }
+  }
 
-	// Change location
-	override public function setPosition(x:Float = 0, y:Float = 0) {
-		super.setPosition(x + 5, y - 8);
-	}
+  // Change location
+  override public function setPosition(x:Float = 0, y:Float = 0) {
+    super.setPosition(x + 5, y - 8);
+  }
 
-	// SEt dir of spin
-	public function setSpinDir(spinDir:String) {
-		this.spinDir = spinDir;
-	}
+  // SEt dir of spin
+  public function setSpinDir(spinDir:String) {
+    this.spinDir = spinDir;
+  }
 }

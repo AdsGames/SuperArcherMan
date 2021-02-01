@@ -11,47 +11,47 @@ import flixel.FlxSprite;
 
 // Door (fun to kick in)
 class Door extends FlxSprite {
-	private var doorSpeed:Float;
-	private var doorPosition:Float;
-	private var open:Bool;
+  private var doorSpeed:Float;
+  private var doorPosition:Float;
+  private var open:Bool;
 
-	// Create a nice one
-	public function new(x:Float, y:Float) {
-		super(x, y, AssetPaths.door__png);
+  // Create a nice one
+  public function new(x:Float, y:Float) {
+    super(x, y, AssetPaths.door__png);
 
-		// Init vars
-		this.doorSpeed = 0;
-		this.doorPosition = 0;
-		this.open = false;
+    // Init vars
+    doorSpeed = 0;
+    doorPosition = 0;
+    open = false;
 
-		// Set orgin
-		this.origin.x = 0;
-		this.origin.y = 0;
+    // Set orgin
+    origin.x = 0;
+    origin.y = 0;
 
-		// Close the door
-		this.scale.x = 0.2;
+    // Close the door
+    scale.x = 0.2;
 
-		// Cant move
-		this.immovable = true;
-	}
+    // Cant move
+    immovable = true;
+  }
 
-	// Update
-	override public function update(elapsed:Float) {
-		super.update(elapsed);
+  // Update
+  override public function update(elapsed:Float) {
+    super.update(elapsed);
 
-		// Slow down
-		this.doorPosition += this.doorSpeed;
-		this.doorSpeed /= 1.02;
+    // Slow down
+    doorPosition += doorSpeed;
+    doorSpeed /= 1.02;
 
-		// Swinging
-		this.scale.x = Math.sin(doorPosition) + 0.2;
-	}
+    // Swinging
+    scale.x = Math.sin(doorPosition) + 0.2;
+  }
 
-	// Open door
-	public function hitDoor(magnitude:Float) {
-		// Only move if its not already open
-		if (this.scale.x < 0.6 && this.scale.x > -0.6) {
-			doorSpeed = magnitude / 1000;
-		}
-	}
+  // Open door
+  public function hitDoor(magnitude:Float) {
+    // Only move if its not already open
+    if (scale.x < 0.6 && scale.x > -0.6) {
+      doorSpeed = magnitude / 1000;
+    }
+  }
 }

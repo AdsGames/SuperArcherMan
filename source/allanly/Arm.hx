@@ -11,13 +11,13 @@ import flixel.FlxSprite;
 
 // Arm that attatches to player
 class Arm extends FlxSprite {
-	// Create arm
-	public function new(image:String = AssetPaths.sword_arm__png) {
-		super(0, 0, image);
-	}
+  // Create arm
+  public function new(image:String = AssetPaths.sword_arm__png) {
+    super(0, 0, image);
+  }
 
-	// Update bow
-	override public function update(elapsed:Float) {
-		super.update(elapsed);
-	}
+  // Update bow
+  override public function update(elapsed:Float) {
+    super.update(elapsed);
+  }
 }

@@ -12,106 +12,106 @@ import flixel.system.FlxSound;
 
 // Swinging enemies
 class Enemy extends Character {
-	private var heySound:FlxSound;
+  private var heySound:FlxSound;
 
-	// Variables
-	private var detected:Bool;
+  // Variables
+  private var detected:Bool;
 
-	// Pointer to jim
-	private var jimPointer:Character;
+  // Pointer to jim
+  private var jimPointer:Character;
 
-	// Constants
-	private static inline final MOVEMENT_SPEED:Int = 200;
+  // Constants
+  private static inline final MOVEMENT_SPEED:Int = 200;
 
-	// Create enemy
-	public function new(jimPointer:Character, x:Float = 0, y:Float = 0) {
-		super(x, y - 40, AssetPaths.enemy__png);
+  // Create enemy
+  public function new(jimPointer:Character, x:Float = 0, y:Float = 0) {
+    super(x, y - 40);
 
-		// Init vars
-		this.detected = false;
+    // Init vars
+    detected = false;
 
-		// Images and animations
-		loadGraphic(AssetPaths.enemy__png, true, 14, 30);
-		this.animation.add("walk", [0, 1, 2, 3], 10, true);
-		this.animation.add("idle", [4, 5, 6, 7], 5, true);
-		this.animation.play("idle");
+    // Images and animations
+    loadGraphic(AssetPaths.enemy__png, true, 14, 30);
+    animation.add("walk", [0, 1, 2, 3], 10, true);
+    animation.add("idle", [4, 5, 6, 7], 5, true);
+    animation.play("idle");
 
-		// Player
-		this.jimPointer = jimPointer;
+    // Player
+    this.jimPointer = jimPointer;
 
-		// Init health
-		this.health = 10;
+    // Init health
+    health = 10;
 
-		// Load sounds
-		this.heySound = new FlxSound();
-		this.heySound.loadEmbedded(AssetPaths.enemy_hey__mp3);
-	}
+    // Load sounds
+    heySound = new FlxSound();
+    heySound.loadEmbedded(AssetPaths.enemy_hey__mp3);
+  }
 
-	// Update
-	override public function update(elapsed:Float) {
-		super.update(elapsed);
+  // Update
+  override public function update(elapsed:Float) {
+    super.update(elapsed);
 
-		// Update sound
-		this.heySound.update(elapsed);
+    // Update sound
+    heySound.update(elapsed);
 
-		// Move enemy
-		this.move(elapsed);
-	}
+    // Move enemy
+    move(elapsed);
+  }
 
-	// Move around
-	override public function move(elapsed:Float) {
-		// Detection
-		var distance = Tools.getDistance(new FlxPoint(this.x, this.y), new FlxPoint(this.jimPointer.x, this.jimPointer.y));
-		if (!this.detected && distance < 50 && this.health > 0) {
-			this.detected = true;
+  // Move around
+  override public function move(elapsed:Float) {
+    // Detection
+    var distance = Tools.getDistance(new FlxPoint(x, y), new FlxPoint(jimPointer.x, jimPointer.y));
+    if (!detected && distance < 50 && health > 0) {
+      detected = true;
 
-			// Hey! sound
-			this.heySound.proximity(this.x, this.y, this.jimPointer, 800, true);
-			this.heySound.play();
-		}
+      // Hey! sound
+      heySound.proximity(x, y, jimPointer, 800, true);
+      heySound.play();
+    }
 
-		// Downcast sword
-		var sword = Std.downcast(this.arm, Sword);
+    // Downcast sword
+    var sword = Std.downcast(arm, Sword);
 
-		if (detected && this.x < jimPointer.x) {
-			if (sword != null) {
-				sword.setSpinDir("right");
-			}
-			this.velocity.x = MOVEMENT_SPEED;
-			this.animation.play("walk");
+    if (detected && x < jimPointer.x) {
+      if (sword != null) {
+        sword.setSpinDir("right");
+      }
+      velocity.x = MOVEMENT_SPEED;
+      animation.play("walk");
 
-			// Flip
-			if (this.scale.x < 0) {
-				this.scale.x *= -1;
-			}
-		}
-		else if (detected && this.x > jimPointer.x) {
-			if (sword != null) {
-				sword.setSpinDir("left");
-			}
-			this.velocity.x = -MOVEMENT_SPEED;
-			this.animation.play("walk");
-			// Flip
-			if (this.scale.x > 0) {
-				this.scale.x *= -1;
-			}
-		}
-		else {
-			if (sword != null) {
-				sword.setSpinDir("none");
-			}
-			this.animation.play("idle");
-		}
+      // Flip
+      if (scale.x < 0) {
+        scale.x *= -1;
+      }
+    }
+    else if (detected && x > jimPointer.x) {
+      if (sword != null) {
+        sword.setSpinDir("left");
+      }
+      velocity.x = -MOVEMENT_SPEED;
+      animation.play("walk");
+      // Flip
+      if (scale.x > 0) {
+        scale.x *= -1;
+      }
+    }
+    else {
+      if (sword != null) {
+        sword.setSpinDir("none");
+      }
+      animation.play("idle");
+    }
 
-		// Move sword to self
-		this.arm.setPosition(this.x, this.y);
+    // Move sword to self
+    arm.setPosition(x, y);
 
-		// Parent move
-		super.move(elapsed);
-	}
+    // Parent move
+    super.move(elapsed);
+  }
 
-	// Get hit
-	public function getHit(velocity:Float) {
-		this.health -= Math.abs(velocity);
-	}
+  // Get hit
+  public function getHit(velocity:Float) {
+    health -= Math.abs(velocity);
+  }
 }
