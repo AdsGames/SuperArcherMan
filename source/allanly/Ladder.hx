@@ -11,9 +11,9 @@ import flixel.FlxSprite;
 
 // Ladder to climb
 class Ladder extends FlxSprite {
-	public function new(x:Float, y:Float, width:Float, height:Float) {
-		super(x, y);
-		this.width = width;
-		this.height = height;
-	}
+  public function new(x:Float, y:Float, width:Float, height:Float) {
+    super(x, y);
+    this.width = width;
+    this.height = height;
+  }
 }

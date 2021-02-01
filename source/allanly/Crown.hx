@@ -7,35 +7,39 @@ package allanly;
  * 4/6/2015
  */
 // Libraries
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 class Crown extends FlxSprite {
-	// Image
-	private var taken:Bool;
+  // Image
+  private var taken:Bool;
 
-	// Create
-	public function new(x:Float, y:Float):Void {
-		// Construct parent
-		super(x, y, AssetPaths.crown__png);
+  // Create
+  public function new(x:Float, y:Float) {
+    // Construct parent
+    super(x, y);
 
-		// Init vars
-		this.taken = false;
+    // Init vars
+    taken = false;
 
-		// Images and animations
-		loadGraphic(AssetPaths.crown__png, true, 16, 32);
-		this.animation.add("twinkle", [0, 1, 2, 3], 8, true);
-		this.animation.add("gone", [4], 8, false);
-		this.animation.play("twinkle");
-	}
+    // Images and animations
+    loadGraphic(AssetPaths.crown__png, true, 16, 32);
+    animation.add("twinkle", [0, 1, 2, 3], 8, true);
+    animation.add("gone", [4], 8, false);
+    animation.play("twinkle");
+  }
 
-	// Its stolen!
-	public function takeCrown() {
-		this.animation.play("gone");
-		taken = true;
-	}
+  // Its stolen!
+  public function takeCrown() {
+    if (!taken) {
+      animation.play("gone");
+      FlxG.sound.play(AssetPaths.crown_get__mp3, 0.5);
+      taken = true;
+    }
+  }
 
-	// Is it gone??
-	public function isTaken():Bool {
-		return taken;
-	}
+  // Is it gone??
+  public function isTaken():Bool {
+    return taken;
+  }
 }

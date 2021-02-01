@@ -10,19 +10,19 @@ package allanly;
 import flixel.FlxSprite;
 
 class Cloud extends FlxSprite {
-	// Create
-	public function new(x:Float, y:Float) {
-		// Construct parent
-		super(x, y, AssetPaths.cloud__png);
+  // Create
+  public function new(x:Float, y:Float) {
+    // Construct parent
+    super(x, y, AssetPaths.cloud__png);
 
-		// Randomization
-		this.velocity.x = Tools.myRandom(5, 20);
-		this.scale.x = Tools.myRandom(5, 20) / 10;
-	}
+    // Randomization
+    velocity.x = Tools.myRandom(5, 20);
+    scale.x = Tools.myRandom(5, 20) / 10;
+  }
 
-	// Update
-	override public function update(elapsed:Float) {
-		// Update parent
-		super.update(elapsed);
-	}
+  // Update
+  override public function update(elapsed:Float) {
+    // Update parent
+    super.update(elapsed);
+  }
 }

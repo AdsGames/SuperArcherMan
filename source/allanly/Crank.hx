@@ -10,34 +10,34 @@ package allanly;
 import flixel.FlxSprite;
 
 class Crank extends FlxSprite {
-	// Image
-	private var activated:Bool;
+  // Image
+  private var activated:Bool;
 
-	// Create
-	public function new(x:Float, y:Float) {
-		// Construct parent
-		super(x, y, AssetPaths.crank__png);
+  // Create
+  public function new(x:Float, y:Float) {
+    // Construct parent
+    super(x, y);
 
-		// Init vars
-		this.activated = false;
+    // Init vars
+    activated = false;
 
-		// Images and animations
-		loadGraphic(AssetPaths.crank__png, true, 16, 16);
+    // Images and animations
+    loadGraphic(AssetPaths.crank__png, true, 16, 16);
 
-		this.animation.add("spin", [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3], 8, false);
-		this.animation.add("stay", [0], 8, false);
-		this.animation.play("stay");
-		this.solid = true;
-	}
+    animation.add("spin", [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3], 8, false);
+    animation.add("stay", [0], 8, false);
+    animation.play("stay");
+    solid = true;
+  }
 
-	// Turn crank
-	public function spin() {
-		this.activated = true;
-		this.animation.play("spin");
-	}
+  // Turn crank
+  public function spin() {
+    activated = true;
+    animation.play("spin");
+  }
 
-	// Check if its been spun
-	public function getActivated():Bool {
-		return this.activated;
-	}
+  // Check if its been spun
+  public function getActivated():Bool {
+    return activated;
+  }
 }

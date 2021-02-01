@@ -10,8 +10,8 @@ package allanly;
 import flixel.FlxSprite;
 
 class Throne extends FlxSprite {
-	public function new(x:Float, y:Float) {
-		// Construct parent
-		super(x, y, AssetPaths.throne__png);
-	}
+  public function new(x:Float, y:Float) {
+    // Construct parent
+    super(x, y, AssetPaths.throne__png);
+  }
 }

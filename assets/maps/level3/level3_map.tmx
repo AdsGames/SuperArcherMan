@@ -23,8 +23,8 @@
    eJzt1bENgDAMRUFPFbIA7D8SaVOkIUiW4U5y5+J3LwIAAAAAAAAAAAAAAAAAAAAAAAAAAOCZ9vIfAN+3aoJW5DjG9ewRABv0owa9Aao5swcwubIHAAAAAAAAAAAAAAAA8Fs39Y4CeA==
   </data>
  </layer>
- <objectgroup id="5" name="objects" visible="0">
-  <object id="1" type="player" x="188.25" y="200.25" width="68.2955" height="72.2955"/>
+ <objectgroup id="5" name="objects">
+  <object id="1" type="player" x="160" y="222" width="64" height="34"/>
   <object id="3" type="enemy" x="560.5" y="239.375" width="14" height="20.75"/>
   <object id="4" type="enemy" x="500.25" y="198.375" width="14" height="20.75"/>
   <object id="5" type="enemy" x="331.5" y="552.125" width="14" height="20.75"/>

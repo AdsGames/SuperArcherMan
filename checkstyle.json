@@ -103,7 +103,7 @@
     {
       "type": "Indentation",
       "props": {
-        "character": "tab",
+        "character": "  ",
         "ignoreConditionals": false,
         "conditionalPolicy": "ignore",
         "ignoreComments": true,
@@ -113,7 +113,7 @@
     {
       "type": "IndentationCharacter",
       "props": {
-        "character": "tab",
+        "character": "space",
         "ignorePattern": "^$"
       }
     },

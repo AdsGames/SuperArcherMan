@@ -13,59 +13,59 @@ import flixel.util.FlxTimer;
 
 // Torch
 class Drawbridge extends FlxSprite {
-	// Timers
-	private var fallTimer:FlxTimer;
+  // Timers
+  private var fallTimer:FlxTimer;
 
-	// Create
-	public function new(x:Float, y:Float, width:Float, height:Float) {
-		// Construct parent
-		super(x, y, AssetPaths.drawbridge__png);
+  // Create
+  public function new(x:Float, y:Float, width:Float, height:Float) {
+    // Construct parent
+    super(x, y, AssetPaths.drawbridge__png);
 
-		this.width = width;
-		this.height = height;
+    this.width = width;
+    this.height = height;
 
-		this.origin.x = this.width / 2;
-		this.origin.y = this.height - this.width / 2;
+    origin.x = this.width / 2;
+    origin.y = this.height - this.width / 2;
 
-		this.immovable = true;
+    immovable = true;
 
-		this.fallTimer = new FlxTimer();
+    fallTimer = new FlxTimer();
 
-		this.solid = true;
-	}
+    solid = true;
+  }
 
-	// Spin for test
-	override public function update(elapsed:Float) {
-		super.update(elapsed);
-	}
+  // Spin for test
+  override public function update(elapsed:Float) {
+    super.update(elapsed);
+  }
 
-	// Turn crank
-	public function fall() {
-		this.fallTimer.start(0.1, this.fallDown, 0);
-		FlxG.sound.play(AssetPaths.bridge__mp3);
-	}
+  // Turn crank
+  public function fall() {
+    fallTimer.start(0.1, fallDown, 0);
+    FlxG.sound.play(AssetPaths.bridge__mp3);
+  }
 
-	// Turn crank
-	public function fallDown(timer:FlxTimer) {
-		if (this.angle > -90) {
-			this.angle -= 5;
-			FlxG.camera.shake();
-		}
-		else {
-			this.angle = -90;
+  // Turn crank
+  public function fallDown(timer:FlxTimer) {
+    if (angle > -90) {
+      angle -= 5;
+      FlxG.camera.shake(0.01, 0.4);
+    }
+    else {
+      angle = -90;
 
-			// For collision
-			this.x -= this.height - this.width;
-			this.y += this.height - this.width;
+      // For collision
+      x -= height - width;
+      y += height - width;
 
-			this.offset.x -= this.height - this.width;
-			this.offset.y += this.height - this.width;
+      offset.x -= height - width;
+      offset.y += height - width;
 
-			var oldWidth:Float = this.width;
-			this.width = this.height;
-			this.height = oldWidth;
+      var oldWidth:Float = width;
+      width = height;
+      height = oldWidth;
 
-			this.fallTimer.cancel();
-		}
-	}
+      fallTimer.cancel();
+    }
+  }
 }
