@@ -49,10 +49,10 @@ jobs:
 
       - name: Deploy to A.D.S. Games
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: adsgames/deploy-to-adsgames@v1.1.1
+        uses: adsgames/deploy-to-adsgames@v1.1.2
         with:
           project-id: superarcherman
-          build-dir: export/html5/bin
+          build-dir: ./export/html5/bin/
           platform: WEB
           bucket-access-key: ${{ secrets.LINODE_BUCKET_ACCESS_KEY }}
           bucket-secret-key: ${{ secrets.LINODE_BUCKET_SECRET_KEY }}
