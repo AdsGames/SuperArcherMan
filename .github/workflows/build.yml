@@ -23,16 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Get the version
-        id: get_version
-        run: echo "tag=$(git describe --tags --always)" >> $GITHUB_OUTPUT
-
-      - run: |
-          echo ${{ github.ref }}
-          echo ${{ github.sha }}
-          echo ${{ github.event_name }}
-          echo ${{ steps.get_version.outputs.tag }}
-
       - name: Setup Haxe
         uses: krdlab/setup-haxe@v1
         with:
@@ -59,10 +49,9 @@ jobs:
 
       - name: Deploy to A.D.S. Games
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: adsgames/deploy-to-adsgames@v1.1.0
+        uses: adsgames/deploy-to-adsgames@v1.1.1
         with:
           project-id: superarcherman
-          version: ${{ steps.get_version.outputs.tag }}
           build-dir: export/html5/bin
           platform: WEB
           bucket-access-key: ${{ secrets.LINODE_BUCKET_ACCESS_KEY }}
