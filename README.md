@@ -10,12 +10,13 @@ haxelib install openfl
 haxelib install flixel
 haxelib run lime setup flixel
 haxelib run flixel-tools setup
+haxelib run lime setup
 ```
 
 ## Running
 
 ```sh
-lime test html5 --connect 6000
+lime test html5 --port 4000
 ```
 
 or in vscode

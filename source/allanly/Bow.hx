@@ -48,7 +48,7 @@ class Bow extends Arm {
     super.update(elapsed);
 
     // Rotate
-    angle = new FlxPoint(x + width / 2.0, y + height / 2.0).angleBetween(new FlxPoint(FlxG.mouse.x, FlxG.mouse.y));
+    angle = new FlxPoint(x + width / 2.0, y + height / 2.0).degreesTo(new FlxPoint(FlxG.mouse.x, FlxG.mouse.y)) + 90;
 
     // Make arrows
     if (FlxG.mouse.justPressed) {

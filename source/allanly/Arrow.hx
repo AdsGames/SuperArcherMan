@@ -9,7 +9,7 @@ package allanly;
 // Imports
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 
 // Realistic arrows
 class Arrow extends FlxSprite {

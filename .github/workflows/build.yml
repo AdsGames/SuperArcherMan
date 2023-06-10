@@ -2,7 +2,7 @@ name: Build Haxe Project
 
 on:
   push:
-    branches: 
+    branches:
       - master
     tags:
       - v*
@@ -18,7 +18,7 @@ jobs:
       - name: Setup Haxe
         uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: 4.1.5
+          haxe-version: 5.3.1
 
       - name: Setup Haxe Libs
         run: |
@@ -29,7 +29,7 @@ jobs:
 
       - name: Build project
         run: haxelib run lime build html5
-        
+
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
