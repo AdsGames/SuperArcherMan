@@ -53,6 +53,7 @@ jobs:
           path: ./export/html5/bin
 
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
         id: deployment
         uses: actions/deploy-pages@v2
 
