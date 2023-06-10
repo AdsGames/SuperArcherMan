@@ -12,7 +12,7 @@
     "tryBody": "next",
     "tryCatch": "next"
   },
-  "indentation":{
+  "indentation": {
     "character": "  "
   }
 }

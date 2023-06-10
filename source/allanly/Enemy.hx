@@ -8,7 +8,7 @@ package allanly;
  */
 // Libraries
 import flixel.math.FlxPoint;
-import flixel.system.FlxSound;
+import flixel.sound.FlxSound;
 
 // Swinging enemies
 class Enemy extends Character {
