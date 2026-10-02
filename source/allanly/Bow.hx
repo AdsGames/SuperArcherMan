@@ -8,9 +8,8 @@ package allanly;
  */
 // Imports
 import flixel.FlxG;
-import flixel.group.FlxGroup;
-import flixel.math.FlxPoint;
-import flixel.util.FlxTimer;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxAngle;
 
 class Bow extends Arm {
   // Variables
@@ -19,10 +18,13 @@ class Bow extends Arm {
   private var minPower:Float;
 
   // Container of arrows
-  private var arrowContainer:FlxGroup;
+  private var arrowContainer:FlxTypedGroup<Arrow>;
+
+  // Oldest arrows get reused past this
+  private static inline final MAX_ARROWS:Int = 50;
 
   // Variables
-  private var powerTimer:FlxTimer;
+  private var charging:Bool;
   private var power:Float;
 
   // Create bow
@@ -31,7 +33,7 @@ class Bow extends Arm {
 
     // Init vars
     power = 0;
-    powerTimer = new FlxTimer();
+    charging = false;
 
     // Set max power it can shoot with
     this.maxPower = maxPower;
@@ -39,7 +41,7 @@ class Bow extends Arm {
     this.minPower = minPower;
 
     // Arrow container
-    arrowContainer = new FlxGroup();
+    arrowContainer = new FlxTypedGroup<Arrow>(MAX_ARROWS);
     FlxG.state.add(arrowContainer);
   }
 
@@ -47,20 +49,31 @@ class Bow extends Arm {
   override public function update(elapsed:Float) {
     super.update(elapsed);
 
-    // Rotate
-    angle = new FlxPoint(x + width / 2.0, y + height / 2.0).degreesTo(new FlxPoint(FlxG.mouse.x, FlxG.mouse.y)) + 90;
+    // Rotate, gamepad keeps the last angle while the stick is at rest
+    if (Controls.usingGamepad) {
+      if (Controls.aimAngle != null) {
+        angle = Controls.aimAngle + 90;
+      }
+    }
+    else {
+      angle = FlxAngle.degreesFromOrigin(FlxG.mouse.x - (x + width / 2.0), FlxG.mouse.y - (y + height / 2.0)) + 90;
+    }
+
+    if (charging) {
+      charge(elapsed);
+    }
 
     // Make arrows
-    if (FlxG.mouse.justPressed) {
-      powerTimer.start(chargeTime / 100.0, powerTicker, 0);
+    if (Controls.fireJustPressed()) {
+      charging = true;
     }
-    else if (FlxG.mouse.justReleased) {
+    else if (Controls.fireJustReleased()) {
       // Min velocity
       if (power > minPower) {
-        arrowContainer.add(new Arrow(this, x + width / 2, y + height / 2, angle, power, 8));
+        arrowContainer.recycle(Arrow, () -> new Arrow(this)).fire(x + width / 2, y + height / 2, angle, power, 8);
       }
       power = 0;
-      powerTimer.cancel();
+      charging = false;
     }
   }
 
@@ -75,13 +88,13 @@ class Bow extends Arm {
   }
 
   // Return arrows
-  public function getArrows():FlxGroup {
+  public function getArrows():FlxTypedGroup<Arrow> {
     return arrowContainer;
   }
 
-  // Ticker for bow power
-  private function powerTicker(timer:FlxTimer) {
-    power += maxPower / 100.0;
+  // Build up bow power, full after chargeTime seconds
+  private function charge(elapsed:Float) {
+    power += maxPower * (elapsed / chargeTime);
 
     // Keep in bounds
     if (power > maxPower) {

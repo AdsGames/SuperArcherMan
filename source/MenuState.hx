@@ -5,12 +5,13 @@ package;
  * The Menu
  * 5/28/2015
  */
+import allanly.Button;
+import allanly.MenuNav;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.effects.particles.FlxEmitter;
 import flixel.effects.particles.FlxParticle;
-import flixel.ui.FlxButton;
 
 class MenuState extends FlxState {
   // Arrows
@@ -50,8 +51,13 @@ class MenuState extends FlxState {
   // Create UI
   private function createUI() {
     add(new FlxSprite(0, 0, AssetPaths.menu__png));
-    add(new FlxButton(280, 380, "Start Game", startGame));
-    add(new FlxButton(280, 420, "Instructions", showHelp));
+    var startButton = new Button(280, 380, "Start Game", startGame);
+    var helpButton = new Button(280, 420, "Instructions", showHelp);
+    add(startButton);
+    add(helpButton);
+
+    // Keyboard and gamepad
+    add(new MenuNav([startButton, helpButton]));
   }
 
   // Start music
@@ -64,11 +70,11 @@ class MenuState extends FlxState {
   // Start
   private function startGame() {
     FlxG.mouse.visible = false;
-    FlxG.switchState(new LevelSelect());
+    FlxG.switchState(LevelSelect.new);
   }
 
   // Help
   private function showHelp() {
-    FlxG.switchState(new HelpState());
+    FlxG.switchState(HelpState.new);
   }
 }

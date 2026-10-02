@@ -6,6 +6,7 @@ import allanly.Background;
 import allanly.Bow;
 import allanly.Character;
 import allanly.Cloud;
+import allanly.Controls;
 import allanly.Crank;
 import allanly.Crown;
 import allanly.Door;
@@ -13,6 +14,7 @@ import allanly.Drawbridge;
 import allanly.Enemy;
 import allanly.Ladder;
 import allanly.Painting;
+import allanly.PixelText;
 import allanly.Player;
 import allanly.Spawn;
 import allanly.Sword;
@@ -22,13 +24,15 @@ import allanly.Torch;
 import allanly.Tree;
 import allanly.WinPointer;
 import flixel.FlxG;
+import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.addons.editors.tiled.TiledMap;
 import flixel.addons.editors.tiled.TiledObject;
 import flixel.addons.editors.tiled.TiledObjectLayer;
 import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.group.FlxGroup;
-import flixel.text.FlxText;
+import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.text.FlxBitmapText;
 import flixel.tile.FlxTilemap;
 
 // THE GAME!
@@ -61,11 +65,20 @@ class PlayState extends FlxState {
   // Win pointer
   private var winPointer:WinPointer;
 
+  // Clouds
+  private var clouds:FlxTypedGroup<Cloud>;
+
   // Player
   private var jim:Player;
 
   // Power text
-  private var powerText:FlxText;
+  private var powerText:FlxBitmapText;
+
+  // Aim marker for gamepad players, the mouse cursor is hidden for them
+  private var crosshair:FlxSprite;
+
+  // How far out from the bow the crosshair sits
+  private static inline final CROSSHAIR_DISTANCE:Float = 60;
 
   // Level
   private var levelFront:FlxTilemap;
@@ -99,23 +112,36 @@ class PlayState extends FlxState {
 
     // Background
     sceneBackground = new Background(5000);
+    add(sceneBackground);
 
     // Create location for pointer so no crashing
+    // Crank and drawbridge do not exist until the map places them, so they never collide
     gameCrank = new Crank(-100, -100);
+    gameCrank.exists = false;
     gameCrown = new Crown(-100, -100);
     gameDrawbridge = new Drawbridge(-100, -100, 0, 0);
+    gameDrawbridge.exists = false;
     gameSpawn = new Spawn(-100, -100, 0, 0);
 
     // Load map :D
     loadMap(levelOn);
 
     // Power text
-    powerText = new FlxText(0, 0, 0, "");
+    powerText = PixelText.create();
     add(powerText);
+
+    // Crosshair
+    crosshair = new FlxSprite(0, 0, AssetPaths.cursor__png);
+    crosshair.visible = false;
+    add(crosshair);
 
     // Win pointer
     winPointer = new WinPointer(gameSpawn, jim);
     add(winPointer);
+
+    // Clouds
+    clouds = new FlxTypedGroup<Cloud>();
+    add(clouds);
 
     // Zoom and follow
     FlxG.camera.follow(jim, PLATFORMER, 1);
@@ -127,15 +153,6 @@ class PlayState extends FlxState {
 
   // HINT: THIS UPDATES
   override public function update(elapsed:Float) {
-    // Move power text to mouse
-    powerText.x = FlxG.mouse.x + 15;
-    powerText.y = FlxG.mouse.y;
-
-    var bow = Std.downcast(jim.getArm(), Bow);
-    if (bow != null) {
-      powerText.text = "" + bow.getPower() + "%";
-    }
-
     // Collide everybuddy
     FlxG.collide(characters, levelCollide);
     FlxG.collide(jim, levelCollide);
@@ -182,16 +199,36 @@ class PlayState extends FlxState {
 
     // Make some clouds
     if (Tools.myRandom(0, 1000) == 1) {
-      add(new Cloud(-100, Tools.myRandom(0, 200)));
+      clouds.recycle(Cloud).spawn(-100, Tools.myRandom(0, 200));
     }
 
     // Menu
-    if (FlxG.keys.pressed.ESCAPE) {
-      FlxG.switchState(new MenuState());
+    if (Controls.menu()) {
+      FlxG.switchState(MenuState.new);
       FlxG.sound.music.stop();
     }
 
     super.update(elapsed);
+
+    // Gamepad aims with the crosshair, keyboard and mouse with the cursor.
+    // Placed after super.update so it uses this frame's bow angle and position.
+    var bow = Std.downcast(jim.getArm(), Bow);
+    crosshair.visible = Controls.usingGamepad && bow != null && bow.active;
+    if (crosshair.visible) {
+      var aim = (bow.angle - 90) * Math.PI / 180;
+      crosshair.x = bow.x + bow.width / 2 + Math.cos(aim) * CROSSHAIR_DISTANCE - crosshair.width / 2;
+      crosshair.y = bow.y + bow.height / 2 + Math.sin(aim) * CROSSHAIR_DISTANCE - crosshair.height / 2;
+    }
+
+    // Move power text next to the aim point
+    var aimX = crosshair.visible ? crosshair.x + crosshair.width / 2 : FlxG.mouse.x;
+    var aimY = crosshair.visible ? crosshair.y + crosshair.height / 2 : FlxG.mouse.y;
+    powerText.x = aimX + 15;
+    powerText.y = aimY;
+
+    if (bow != null) {
+      powerText.text = "" + bow.getPower() + "%";
+    }
   }
 
   // Door actions
@@ -202,7 +239,7 @@ class PlayState extends FlxState {
   // Arrows through door
   private function hitDoorArrow(arrow:Arrow, door:Door) {
     // Door is closed
-    if (!arrow.dead && (door.scale.x <= 0.2 || door.scale.x >= -0.2)) {
+    if (!arrow.dead && door.scale.x <= 0.2 && door.scale.x >= -0.2) {
       arrow.velocity.x /= 1.2;
       arrow.velocity.y /= 1.2;
       door.hitDoor(arrow.velocity.x);
@@ -211,8 +248,9 @@ class PlayState extends FlxState {
 
   // Enemy actions
   private function hitEnemy(arrow:Arrow, enemy:Enemy) {
-    if (arrow.velocity.x != 0 && arrow.velocity.y != 0) {
-      enemy.getHit(arrow.velocity.x / Math.cos(arrow.angle));
+    if (!arrow.hasHit && arrow.velocity.x != 0 && arrow.velocity.y != 0) {
+      arrow.hasHit = true;
+      enemy.getHit(arrow.velocity.length);
       arrow.velocity.x *= -0.1;
 
       if (enemy.health <= 0) {
@@ -342,6 +380,7 @@ class PlayState extends FlxState {
         return;
       case "crank":
         gameCrank.setPosition(obj.x, obj.y);
+        gameCrank.exists = true;
         add(gameCrank);
         return;
       case "water":

@@ -18,6 +18,10 @@ class Spawn extends FlxSprite {
     animation.add("eat", [0, 2, 1, 1, 1, 1, 2, 1, 1, 2, 2, 0], 3, false);
     animation.add("still", [0], 8, false);
     animation.play("still");
+
+    // Hitbox from map
+    this.width = width;
+    this.height = height;
   }
 
   // Update

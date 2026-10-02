@@ -7,7 +7,7 @@ package allanly;
  * 1/6/2015
  */
 // Libraries
-import flixel.math.FlxPoint;
+import flixel.FlxG;
 import flixel.sound.FlxSound;
 
 // Swinging enemies
@@ -44,7 +44,7 @@ class Enemy extends Character {
 
     // Load sounds
     heySound = new FlxSound();
-    heySound.loadEmbedded(AssetPaths.enemy_hey__mp3);
+    heySound.load(AssetPaths.enemy_hey__mp3);
   }
 
   // Update
@@ -54,14 +54,28 @@ class Enemy extends Character {
     // Update sound
     heySound.update(elapsed);
 
+    // Fell out of the world after dying
+    if (health <= 0 && y > FlxG.worldBounds.bottom) {
+      kill();
+      return;
+    }
+
     // Move enemy
     move(elapsed);
+  }
+
+  // Remove sword with enemy
+  override public function kill() {
+    if (arm != null) {
+      arm.kill();
+    }
+    super.kill();
   }
 
   // Move around
   override public function move(elapsed:Float) {
     // Detection
-    var distance = Tools.getDistance(new FlxPoint(x, y), new FlxPoint(jimPointer.x, jimPointer.y));
+    var distance = Tools.getDistance(x, y, jimPointer.x, jimPointer.y);
     if (!detected && distance < 50 && health > 0) {
       detected = true;
 
@@ -73,7 +87,10 @@ class Enemy extends Character {
     // Downcast sword
     var sword = Std.downcast(arm, Sword);
 
-    if (detected && x < jimPointer.x) {
+    // Dead enemies stop chasing
+    var chasing = detected && health > 0;
+
+    if (chasing && x < jimPointer.x) {
       if (sword != null) {
         sword.setSpinDir("right");
       }
@@ -85,7 +102,7 @@ class Enemy extends Character {
         scale.x *= -1;
       }
     }
-    else if (detected && x > jimPointer.x) {
+    else if (chasing && x > jimPointer.x) {
       if (sword != null) {
         sword.setSpinDir("left");
       }
@@ -102,9 +119,6 @@ class Enemy extends Character {
       }
       animation.play("idle");
     }
-
-    // Move sword to self
-    arm.setPosition(x, y);
 
     // Parent move
     super.move(elapsed);

@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    uses: adsgames/deploy-to-adsgames/.github/workflows/release-haxe-game.yml@v1
+    permissions:
+      id-token: write
+      contents: read
+    with:
+      project-id: superarcherman
+      haxelibs: |
+        lime 8.3.2
+        openfl 9.5.2
+        flixel 6.2.0
+        flixel-addons 4.0.2
+    secrets:
+      ADSGAMES_API_KEY: ${{ secrets.ADSGAMES_API_KEY }}
