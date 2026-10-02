@@ -74,11 +74,11 @@ class PlayState extends FlxState {
   // Power text
   private var powerText:FlxBitmapText;
 
-  // Aim marker for gamepad players, the mouse cursor is hidden for them
+  // Aim marker along the bow's aim line, replaces the mouse cursor while the bow is out
   private var crosshair:FlxSprite;
 
-  // How far out from the bow the crosshair sits
-  private static inline final CROSSHAIR_DISTANCE:Float = 60;
+  // How far out from the bow the crosshair sits, further out makes small angles easier to see
+  private static inline final CROSSHAIR_DISTANCE:Float = 120;
 
   // Level
   private var levelFront:FlxTilemap;
@@ -210,15 +210,18 @@ class PlayState extends FlxState {
 
     super.update(elapsed);
 
-    // Gamepad aims with the crosshair, keyboard and mouse with the cursor.
+    // Crosshair at a fixed distance along the aim line, for both mouse and gamepad.
     // Placed after super.update so it uses this frame's bow angle and position.
     var bow = Std.downcast(jim.getArm(), Bow);
-    crosshair.visible = Controls.usingGamepad && bow != null && bow.active;
+    crosshair.visible = bow != null && bow.active;
     if (crosshair.visible) {
       var aim = (bow.angle - 90) * Math.PI / 180;
       crosshair.x = bow.x + bow.width / 2 + Math.cos(aim) * CROSSHAIR_DISTANCE - crosshair.width / 2;
       crosshair.y = bow.y + bow.height / 2 + Math.sin(aim) * CROSSHAIR_DISTANCE - crosshair.height / 2;
     }
+
+    // The crosshair replaces the cursor, it uses the same image
+    FlxG.mouse.visible = !crosshair.visible && !Controls.usingGamepad;
 
     // Move power text next to the aim point
     var aimX = crosshair.visible ? crosshair.x + crosshair.width / 2 : FlxG.mouse.x;
