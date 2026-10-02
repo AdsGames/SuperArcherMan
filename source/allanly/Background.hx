@@ -9,18 +9,19 @@ package allanly;
 // Libraries
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.group.FlxGroup.FlxTypedGroup;
 
-class Background extends FlxSprite {
+class Background extends FlxTypedGroup<FlxSprite> {
   // Create
   public function new(width:Int) {
-    super(0, 0, AssetPaths.mountains__png);
+    super();
 
     // Add backgrounds
     var t:Int = 0;
     while (t < width) {
       var paralax:FlxSprite = new FlxSprite(t, 0, AssetPaths.mountains__png);
       paralax.scrollFactor.x = 0.5;
-      FlxG.state.add(paralax);
+      add(paralax);
       t += FlxG.width;
     }
   }

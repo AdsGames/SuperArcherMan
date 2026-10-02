@@ -8,7 +8,7 @@ package allanly;
  */
 // Imports
 import flixel.FlxG;
-import flixel.group.FlxGroup;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.util.FlxTimer;
 
 class Player extends Character {
@@ -70,7 +70,7 @@ class Player extends Character {
     super.update(elapsed);
 
     // Kill urself
-    if (!dead && FlxG.keys.pressed.K) {
+    if (!dead && Controls.suicide()) {
       die();
     }
 
@@ -84,7 +84,7 @@ class Player extends Character {
     if (!dead) {
       // Move that character
       // Right
-      if (FlxG.keys.pressed.D) {
+      if (Controls.right()) {
         velocity.x = MOVEMENT_SPEED;
         animation.play("walk");
         // Flip
@@ -93,7 +93,7 @@ class Player extends Character {
         }
       }
       // Left
-      if (FlxG.keys.pressed.A) {
+      if (Controls.left()) {
         velocity.x = -MOVEMENT_SPEED;
         animation.play("walk");
         // Flip
@@ -103,40 +103,40 @@ class Player extends Character {
       }
       // Ladder
       if (isOnLadder) {
-        if (FlxG.keys.pressed.W) {
+        if (Controls.up()) {
           animation.play("climb");
           y -= 1;
         }
-        else if (FlxG.keys.pressed.S) {
+        else if (Controls.down()) {
           animation.play("climb");
           y += 1;
         }
       }
       // Jump Jump!
-      if (FlxG.keys.pressed.SPACE) {
+      if (Controls.jump()) {
         jump(JUMP_VELOCITY);
       }
       // Idleing
-      if (!FlxG.keys.pressed.A && !FlxG.keys.pressed.D && !isOnLadder) {
+      if (!Controls.left() && !Controls.right() && !isOnLadder) {
         animation.play("idle");
       }
       // Win
       if (hasWon && counter >= DEATH_TIMER) {
         FlxG.sound.music.stop();
         counter = 0;
-        FlxG.switchState(new MenuState());
+        FlxG.switchState(MenuState.new);
       }
     }
     else if (dead && counter >= DEATH_TIMER) {
       FlxG.sound.music.stop();
-      FlxG.switchState(new PlayState(PlayState.levelOn));
+      FlxG.switchState(() -> new PlayState(PlayState.levelOn));
     }
 
     super.move(elapsed);
   }
 
   // Get arrows
-  public function getArrows():FlxGroup {
+  public function getArrows():FlxTypedGroup<Arrow> {
     var bow = Std.downcast(getArm(), Bow);
     if (bow != null) {
       return bow.getArrows();
@@ -148,7 +148,10 @@ class Player extends Character {
   public function die() {
     if (!dead) {
       animation.play("die");
-      arm.visible = false;
+      if (arm != null) {
+        arm.visible = false;
+        arm.active = false;
+      }
       dead = true;
       FlxG.sound.play(AssetPaths.bell__mp3);
       startTimer();
@@ -159,6 +162,9 @@ class Player extends Character {
   public function win() {
     if (!hasWon) {
       hasWon = true;
+      if (arm != null) {
+        arm.active = false;
+      }
       FlxG.sound.play(AssetPaths.win__mp3);
       startTimer();
     }
@@ -169,7 +175,7 @@ class Player extends Character {
     this.isOnLadder = isOnLadder;
 
     if (isOnLadder) {
-      if (FlxG.keys.pressed.W || FlxG.keys.pressed.S) {
+      if (Controls.up() || Controls.down()) {
         x = ladderX;
       }
     }

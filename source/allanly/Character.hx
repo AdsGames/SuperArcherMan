@@ -28,9 +28,6 @@ class Character extends FlxSprite {
     jumping = false;
     ignoreGravity = false;
 
-    // Add blank arm
-    arm = new Arm();
-
     // Gravity
     acceleration.y = GRAVITY;
   }
@@ -46,7 +43,9 @@ class Character extends FlxSprite {
     }
 
     // Move bow to player
-    arm.setPosition(x, y);
+    if (arm != null) {
+      arm.setPosition(x, y);
+    }
   }
 
   // Update
@@ -71,7 +70,9 @@ class Character extends FlxSprite {
 
   // Add arm
   public function pickupArm(arm:Arm) {
-    FlxG.state.remove(arm);
+    if (this.arm != null) {
+      FlxG.state.remove(this.arm);
+    }
     this.arm = arm;
     FlxG.state.add(arm);
   }

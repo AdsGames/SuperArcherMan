@@ -7,15 +7,19 @@ package allanly;
  * 11/6/2015
  */
 // Libraries
+import flixel.FlxG;
 import flixel.FlxSprite;
 
 class Cloud extends FlxSprite {
   // Create
-  public function new(x:Float, y:Float) {
+  public function new(x:Float = 0, y:Float = 0) {
     // Construct parent
     super(x, y, AssetPaths.cloud__png);
+  }
 
-    // Randomization
+  // Place and randomize (also used when recycled)
+  public function spawn(x:Float, y:Float) {
+    setPosition(x, y);
     velocity.x = Tools.myRandom(5, 20);
     scale.x = Tools.myRandom(5, 20) / 10;
   }
@@ -24,5 +28,10 @@ class Cloud extends FlxSprite {
   override public function update(elapsed:Float) {
     // Update parent
     super.update(elapsed);
+
+    // Gone past the level
+    if (x > FlxG.worldBounds.right) {
+      kill();
+    }
   }
 }

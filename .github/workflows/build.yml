@@ -4,56 +4,66 @@ on:
   push:
     branches:
       - master
-    tags:
-      - v*
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Pull requests cancel their older runs, master deploys run one at a time
+concurrency:
+  group: ${{ github.event_name == 'push' && 'pages' || format('pages-{0}', github.ref) }}
+  cancel-in-progress: ${{ github.event_name != 'push' }}
+
 jobs:
   build:
     name: Build Project
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Haxe
         uses: krdlab/setup-haxe@v1
         with:
-          haxe-version: 4.3.1
+          haxe-version: 4.3.7
+
+      - name: Cache Haxe Libs
+        id: cache-haxe-libs
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/lib/haxe/lib/
+          key: ${{ runner.os }}-haxe-libs-lime-8.3.2-openfl-9.5.2-flixel-6.2.0-flixel-addons-4.0.2
 
       - name: Setup Haxe Libs
         run: |
-          haxelib install lime --quiet
-          haxelib install openfl --quiet
-          haxelib install flixel --quiet
-          haxelib run lime setup flixel --quiet
+          haxelib install lime 8.3.2 --always --quiet
+          haxelib install openfl 9.5.2 --always --quiet
+          haxelib install flixel 6.2.0 --always --quiet
+          haxelib install flixel-addons 4.0.2 --always --quiet
 
       - name: Build project
         run: haxelib run lime build html5
 
-      - uses: actions/upload-pages-artifact@v1
+      # Pull requests only check that the game builds
+      - name: Upload Pages artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: ./export/html5/bin
+          path: export/html5/bin
 
+  deploy:
+    name: Deploy to Pages
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/master'
         id: deployment
-        uses: actions/deploy-pages@v2
-
-      - name: Deploy to A.D.S. Games
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: adsgames/deploy-to-adsgames@v1.1.2
-        with:
-          project-id: superarcherman
-          build-dir: ./export/html5/bin/
-          platform: WEB
-          bucket-access-key: ${{ secrets.LINODE_BUCKET_ACCESS_KEY }}
-          bucket-secret-key: ${{ secrets.LINODE_BUCKET_SECRET_KEY }}
-          api-key: ${{ secrets.ADSGAMES_API_KEY }}
+        uses: actions/deploy-pages@v4
